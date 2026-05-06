@@ -87,7 +87,7 @@ PRISM is designed to show:
 - system thinking over one-off mockups
 - separation between primitives, semantics, and themes
 - how AI-friendly descriptions improve token usability
-- how one component model can adapt across industries
+- how one component model can adapt across industries and themes
 - how structured JSON can bridge browser-based tooling and design tools like Figma
 
 ---
