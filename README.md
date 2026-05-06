@@ -94,7 +94,7 @@ PRISM is designed to show:
 
 ## Live Demo
 
-- **GitHub Pages Playground:** `ADD_YOUR_GITHUB_PAGES_LINK_HERE`
+- **GitHub Pages Playground:** `https://idaakiwumi.github.io/prism-design-system/`
 
 
 ---
