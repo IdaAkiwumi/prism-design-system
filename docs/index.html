@@ -3,87 +3,208 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PRISM Component Spec Builder</title>
+  <title>PRISM Design System Playground</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <main class="container">
+  <main class="page-shell">
     <header class="hero">
-      <h1>PRISM Component Spec Builder</h1>
-      <p>
-        Use this form to generate a JSON spec for a token-driven Figma button component.
-      </p>
+      <div class="hero-copy">
+        <p class="eyebrow">PRISM Design System</p>
+        <h1>Token-Driven UI Playground</h1>
+        <p class="hero-text">
+          Generate a component spec, preview the UI live in the browser,
+          and compare it with the linked Figma design file.
+        </p>
+      </div>
     </header>
 
-    <section class="card">
-      <form id="specForm">
-        <div class="field">
-          <label for="componentType">Component type</label>
-          <select id="componentType" name="componentType">
-            <option value="button" selected>Button</option>
-          </select>
+    <section class="main-grid">
+      <section class="controls-panel card">
+        <div class="section-heading">
+          <h2>Component Spec Builder</h2>
+          <p>
+            Use the controls below to create a JSON spec and see the design update instantly.
+          </p>
         </div>
 
-        <div class="field">
-          <label for="variant">Variant</label>
-          <select id="variant" name="variant">
-            <option value="primary" selected>Primary</option>
-            <option value="ghost">Ghost</option>
-          </select>
+        <form id="specForm">
+          <div class="field-grid">
+            <div class="field">
+              <label for="componentType">Component type</label>
+              <select id="componentType" name="componentType">
+                <option value="button" selected>Button</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="theme">Theme</label>
+              <select id="theme" name="theme">
+                <option value="base" selected>Base</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="education">Education</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="variant">Button variant</label>
+              <select id="variant" name="variant">
+                <option value="primary" selected>Primary</option>
+                <option value="ghost">Ghost</option>
+                <option value="success">Success</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="state">Button state</label>
+              <select id="state" name="state">
+                <option value="default" selected>Default</option>
+                <option value="hover">Hover</option>
+                <option value="active">Active</option>
+                <option value="disabled">Disabled</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="label">Button label</label>
+              <input
+                id="label"
+                name="label"
+                type="text"
+                value="Approve"
+                placeholder="Approve"
+              />
+            </div>
+
+            <div class="field">
+              <label for="badgeState">Status badge</label>
+              <select id="badgeState" name="badgeState">
+                <option value="success" selected>Recently approved</option>
+                <option value="warning">Needs review</option>
+                <option value="danger">At risk</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="cardTitle">Card title</label>
+            <input
+              id="cardTitle"
+              name="cardTitle"
+              type="text"
+              value="Absence notification"
+              placeholder="Absence notification"
+            />
+          </div>
+
+          <div class="field">
+            <label for="cardBody">Card body text</label>
+            <textarea
+              id="cardBody"
+              name="cardBody"
+              rows="4"
+              placeholder="This card shows how typography, badges, spacing, and buttons work together in one token-driven component."
+            >This card shows how typography, badges, spacing, and buttons work together in one token-driven component.</textarea>
+          </div>
+
+          <div class="field">
+            <label for="notes">Optional notes</label>
+            <textarea
+              id="notes"
+              name="notes"
+              rows="5"
+              placeholder="Examples: make it bolder and more cinematic, soft and friendly, quiet secondary action, uppercase"
+            ></textarea>
+            <p class="helper-text">
+              Notes can tweak the result. Example keywords: <strong>bolder</strong>,
+              <strong>cinematic</strong>, <strong>soft</strong>, <strong>quiet</strong>, <strong>uppercase</strong>.
+            </p>
+          </div>
+
+          <div class="field">
+            <label for="figmaUrl">Figma file or frame URL</label>
+            <input
+              id="figmaUrl"
+              name="figmaUrl"
+              type="text"
+              placeholder="Paste your Figma file URL here"
+            />
+            <p class="helper-text">
+              Paste your standard Figma file URL. The page converts it into an embed automatically.
+            </p>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn btn-primary">Generate Preview</button>
+            <button type="button" id="copyJsonBtn" class="btn btn-secondary">Copy JSON</button>
+            <button type="button" id="downloadJsonBtn" class="btn btn-secondary">Download JSON</button>
+            <button type="button" id="updateEmbedBtn" class="btn btn-secondary">Update Figma Embed</button>
+          </div>
+        </form>
+
+        <div class="json-panel">
+          <div class="section-heading">
+            <h3>Generated JSON Spec</h3>
+            <p>This is the structured output that can also feed the Figma plugin.</p>
+          </div>
+          <pre id="jsonOutput" class="code-block"></pre>
+        </div>
+      </section>
+
+      <section class="preview-panel">
+        <div class="card live-preview-card">
+          <div class="section-heading">
+            <h2>Live Browser Preview</h2>
+            <p>
+              This preview updates instantly in the browser, so reviewers can see the system working without needing plugin access.
+            </p>
+          </div>
+ <p class="ui-kicker">Agentic UI Pattern</p>
+          <div id="themePreviewSurface" class="preview-surface">
+             
+            <div id="uiCard" class="ui-card">
+              <div class="ui-card-top">
+                <div class="ui-card-copy">
+                
+                  <h3 id="previewTitle" class="ui-title">Absence notification</h3>
+                </div>
+                <span id="previewBadge" class="status-badge">Recently approved</span>
+              </div>
+
+              <p id="previewBody" class="ui-body">
+                This card shows how typography, badges, spacing, and buttons work together in one token-driven component.
+              </p>
+
+              
+
+              <div class="button-row">
+                <button id="livePreviewButton" class="preview-button">Approve</button>
+                <button id="secondaryPreviewButton" class="secondary-inline-button">Edit</button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="field">
-          <label for="state">State</label>
-          <select id="state" name="state">
-            <option value="default" selected>Default</option>
-            <option value="disabled">Disabled</option>
-          </select>
-        </div>
+        <div class="card embed-card">
+          <div class="section-heading">
+            <h2>Embedded Figma File</h2>
+            <p>
+              Use this to show your token architecture, components, variants, and pre-built examples inside your public Figma file.
+            </p>
+          </div>
 
-        <div class="field">
-          <label for="theme">Theme</label>
-          <select id="theme" name="theme">
-            <option value="base" selected>Base</option>
-            <option value="entertainment">Entertainment</option>
-            <option value="education">Education</option>
-          </select>
-        </div>
+          <div id="embedPlaceholder" class="embed-placeholder">
+            Paste your Figma file link on the left, then click <strong>Update Figma Embed</strong>.
+          </div>
 
-        <div class="field">
-          <label for="label">Label text</label>
-          <input
-            id="label"
-            name="label"
-            type="text"
-            placeholder="Approve"
-            value="Approve"
-          />
+          <iframe
+            id="figmaEmbed"
+            class="figma-embed hidden"
+            src=""
+            allowfullscreen
+          ></iframe>
         </div>
-
-        <div class="field">
-          <label for="notes">Optional notes</label>
-          <textarea
-            id="notes"
-            name="notes"
-            rows="4"
-            placeholder="Make this feel bold and cinematic"
-          ></textarea>
-        </div>
-
-        <div class="actions">
-          <button type="submit" class="btn btn-primary">Generate JSON</button>
-          <button type="button" id="copyJsonBtn" class="btn btn-secondary">Copy JSON</button>
-          <button type="button" id="downloadJsonBtn" class="btn btn-secondary">Download JSON</button>
-        </div>
-      </form>
-    </section>
-
-    <section class="card output-card">
-      <div class="output-header">
-        <h2>Generated Spec</h2>
-        <p>Paste this into the Figma plugin.</p>
-      </div>
-      <pre id="jsonOutput" class="code-block"></pre>
+      </section>
     </section>
   </main>
 

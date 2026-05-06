@@ -1,8 +1,5 @@
-figma.showUI(__html__, { width: 420, height: 360 });
+figma.showUI(__html__, { width: 420, height: 380 });
 
-// ------------------------------
-// Embedded token data
-// ------------------------------
 const primitives = {
   color: {
     blue: {
@@ -29,8 +26,7 @@ const semantic = {
   color: {
     action: {
       primary: { $value: "{color.blue.500}", $type: "color" },
-      "primary-hover": { $value: "{color.blue.700}", $type: "color" },
-      destructive: { $value: "{color.red.500}", $type: "color" }
+      "primary-hover": { $value: "{color.blue.700}", $type: "color" }
     },
     feedback: {
       success: { $value: "#00AA44", $type: "color" },
@@ -39,12 +35,7 @@ const semantic = {
     },
     text: {
       primary: { $value: "{color.gray.900}", $type: "color" },
-      inverse: { $value: "{color.white}", $type: "color" },
-      disabled: { $value: "{color.gray.500}", $type: "color" }
-    },
-    surface: {
-      default: { $value: "{color.white}", $type: "color" },
-      raised: { $value: "{color.gray.100}", $type: "color" }
+      inverse: { $value: "{color.white}", $type: "color" }
     }
   }
 };
@@ -58,10 +49,6 @@ const themes = {
       },
       text: {
         primary: { $value: "{color.white}", $type: "color" }
-      },
-      surface: {
-        default: { $value: "{color.black}", $type: "color" },
-        raised: { $value: "#1A1A1A", $type: "color" }
       }
     }
   },
@@ -69,23 +56,18 @@ const themes = {
     color: {
       action: {
         primary: { $value: "{color.amber.500}", $type: "color" }
-      },
-      surface: {
-        default: { $value: "#FFFBF2", $type: "color" }
       }
     }
   }
 };
 
 const recipe = {
-  componentType: "button",
   sizes: {
     md: {
       height: 40,
       paddingX: 16,
       paddingY: 10,
-      fontSize: 14,
-      fontWeight: 500
+      fontSize: 14
     }
   },
   variants: {
@@ -98,14 +80,11 @@ const recipe = {
       fillToken: null,
       textToken: "color.action.primary",
       strokeToken: "color.action.primary"
-    }
-  },
-  states: {
-    default: {},
-    disabled: {
-      fillOverride: "#737373",
-      textOverride: "#D4D4D4",
-      strokeOverride: "#737373"
+    },
+    success: {
+      fillToken: "color.feedback.success",
+      textToken: "color.text.inverse",
+      strokeToken: null
     }
   },
   themeOverrides: {
@@ -115,80 +94,95 @@ const recipe = {
   }
 };
 
-// ------------------------------
-// Helpers
-// ------------------------------
 function hexToRgb(hex) {
   const clean = hex.replace("#", "");
   const bigint = parseInt(clean, 16);
-
-  const r = ((bigint >> 16) & 255) / 255;
-  const g = ((bigint >> 8) & 255) / 255;
-  const b = (bigint & 255) / 255;
-
-  return { r, g, b };
+  return {
+    r: ((bigint >> 16) & 255) / 255,
+    g: ((bigint >> 8) & 255) / 255,
+    b: (bigint & 255) / 255
+  };
 }
 
 function getPath(obj, path) {
-  const parts = path.split(".");
-  let current = obj;
-
-  for (const part of parts) {
-    if (!current || current[part] === undefined) {
-      return null;
-    }
-    current = current[part];
-  }
-
-  return current;
+  return path.split(".").reduce((acc, part) => (acc ? acc[part] : null), obj);
 }
 
 function resolvePrimitiveReference(refPath) {
-  const primitiveNode = getPath(primitives, refPath);
-  if (!primitiveNode) return null;
-  return primitiveNode.$value || null;
+  const node = getPath(primitives, refPath);
+  return node ? node.$value : null;
 }
 
 function getThemeOrSemanticNode(tokenPath, themeName) {
-  const themeNode = getPath(themes[themeName] || {}, tokenPath);
-  if (themeNode) return themeNode;
-
-  const semanticNode = getPath(semantic, tokenPath);
-  if (semanticNode) return semanticNode;
-
-  return null;
+  return getPath(themes[themeName] || {}, tokenPath) || getPath(semantic, tokenPath);
 }
 
 function resolveTokenValue(tokenPath, themeName) {
   const tokenNode = getThemeOrSemanticNode(tokenPath, themeName);
-
-  if (!tokenNode) {
-    return null;
-  }
+  if (!tokenNode) return null;
 
   const value = tokenNode.$value;
-
   if (typeof value === "string" && value.startsWith("{") && value.endsWith("}")) {
-    const refPath = value.slice(1, -1);
-    return resolvePrimitiveReference(refPath);
+    return resolvePrimitiveReference(value.slice(1, -1));
   }
-
   return value;
 }
 
-async function createButtonFromSpec(spec) {
-  if (spec.componentType !== "button") {
-    throw new Error("Only button is supported in this MVP.");
-  }
+function capitalize(value) {
+  return value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+}
 
-  const variant = spec.variant || "primary";
-  const state = spec.state || "default";
-  const theme = spec.theme || "base";
-  const label = spec.label || "Button";
+function parseNotes(notes) {
+  const lower = (notes || "").toLowerCase();
+  return {
+    bolder: lower.includes("bolder"),
+    bold: lower.includes("bold"),
+    cinematic: lower.includes("cinematic"),
+    soft: lower.includes("soft"),
+    friendly: lower.includes("friendly"),
+    subtle: lower.includes("subtle"),
+    quiet: lower.includes("quiet"),
+    loud: lower.includes("loud"),
+    uppercase: lower.includes("uppercase")
+  };
+}
+
+function applyNoteTweaks(spec) {
+  const parsed = parseNotes(spec.notes || "");
+
+  const computed = {
+    variant: spec.variant || "primary",
+    state: spec.state || "default",
+    theme: spec.theme || "base",
+    label: spec.label || "Button",
+    radius: null,
+    fontSize: 14,
+    paddingX: 16
+  };
+
+  if (parsed.subtle || parsed.quiet) computed.variant = "ghost";
+  if (parsed.loud || parsed.bold) computed.variant = "primary";
+  if (parsed.bolder || parsed.bold) computed.fontSize = 16;
+  if (parsed.cinematic) {
+    computed.radius = 0;
+    computed.paddingX = 20;
+  }
+  if (parsed.soft || parsed.friendly) computed.radius = 12;
+  if (parsed.uppercase) computed.label = computed.label.toUpperCase();
+
+  return { ...spec, computed };
+}
+
+async function createButtonFromSpec(rawSpec) {
+  const spec = applyNoteTweaks(rawSpec);
+
+  const variant = spec.computed.variant;
+  const state = spec.computed.state;
+  const theme = spec.computed.theme;
+  const label = spec.computed.label;
 
   const size = recipe.sizes.md;
   const variantConfig = recipe.variants[variant];
-  const stateConfig = recipe.states[state] || {};
   const themeConfig = recipe.themeOverrides[theme] || recipe.themeOverrides.base;
 
   if (!variantConfig) {
@@ -202,66 +196,60 @@ async function createButtonFromSpec(spec) {
   component.layoutMode = "HORIZONTAL";
   component.primaryAxisSizingMode = "AUTO";
   component.counterAxisSizingMode = "AUTO";
-  component.paddingLeft = size.paddingX;
-  component.paddingRight = size.paddingX;
+  component.paddingLeft = spec.computed.paddingX;
+  component.paddingRight = spec.computed.paddingX;
   component.paddingTop = size.paddingY;
   component.paddingBottom = size.paddingY;
   component.itemSpacing = 8;
-  component.cornerRadius = themeConfig.radius;
+  component.cornerRadius = spec.computed.radius ?? themeConfig.radius;
   component.minHeight = size.height;
 
-  let fillHex = null;
-  let textHex = null;
-  let strokeHex = null;
+  let fillHex = variantConfig.fillToken ? resolveTokenValue(variantConfig.fillToken, theme) : null;
+  let textHex = variantConfig.textToken ? resolveTokenValue(variantConfig.textToken, theme) : "#111111";
+  let strokeHex = variantConfig.strokeToken ? resolveTokenValue(variantConfig.strokeToken, theme) : null;
+
+  if (state === "hover") {
+    if (variant === "primary") fillHex = resolveTokenValue("color.action.primary-hover", theme) || fillHex;
+  }
 
   if (state === "disabled") {
-    fillHex = stateConfig.fillOverride || null;
-    textHex = stateConfig.textOverride || null;
-    strokeHex = stateConfig.strokeOverride || null;
-  } else {
-    fillHex = variantConfig.fillToken ? resolveTokenValue(variantConfig.fillToken, theme) : null;
-    textHex = variantConfig.textToken ? resolveTokenValue(variantConfig.textToken, theme) : null;
-    strokeHex = variantConfig.strokeToken ? resolveTokenValue(variantConfig.strokeToken, theme) : null;
+    fillHex = "#737373";
+    textHex = "#D4D4D4";
+    strokeHex = variant === "ghost" ? "#737373" : null;
   }
 
   if (fillHex) {
-    component.fills = [
-      {
-        type: "SOLID",
-        color: hexToRgb(fillHex)
-      }
-    ];
+    component.fills = [{ type: "SOLID", color: hexToRgb(fillHex) }];
   } else {
     component.fills = [];
   }
 
   if (strokeHex) {
-    component.strokes = [
-      {
-        type: "SOLID",
-        color: hexToRgb(strokeHex)
-      }
-    ];
+    component.strokes = [{ type: "SOLID", color: hexToRgb(strokeHex) }];
     component.strokeWeight = 1.5;
   } else {
     component.strokes = [];
   }
 
-  const textNode = figma.createText();
-  textNode.characters = label;
-  textNode.fontName = { family: "Inter", style: "Regular" };
-  textNode.fontSize = size.fontSize;
-
-  if (!textHex) {
-    textHex = "#111111";
+  if (state === "active") {
+    component.effects = [
+      {
+        type: "INNER_SHADOW",
+        color: { r: 0, g: 0, b: 0, a: 0.18 },
+        offset: { x: 0, y: 2 },
+        radius: 6,
+        spread: 0,
+        visible: true,
+        blendMode: "NORMAL"
+      }
+    ];
   }
 
-  textNode.fills = [
-    {
-      type: "SOLID",
-      color: hexToRgb(textHex)
-    }
-  ];
+  const textNode = figma.createText();
+  textNode.fontName = { family: "Inter", style: "Regular" };
+  textNode.fontSize = spec.computed.fontSize;
+  textNode.characters = label;
+  textNode.fills = [{ type: "SOLID", color: hexToRgb(textHex) }];
 
   component.appendChild(textNode);
 
@@ -273,14 +261,6 @@ async function createButtonFromSpec(spec) {
   figma.viewport.scrollAndZoomIntoView([component]);
 }
 
-function capitalize(value) {
-  if (!value || typeof value !== "string") return value;
-  return value.charAt(0).toUpperCase() + value.slice(1);
-}
-
-// ------------------------------
-// UI messaging
-// ------------------------------
 figma.ui.onmessage = async (msg) => {
   if (msg.type === "cancel") {
     figma.closePlugin();

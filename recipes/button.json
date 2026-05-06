@@ -1,13 +1,13 @@
 {
   "componentType": "button",
-  "description": "Recipe for generating button components in Figma from token-driven inputs.",
+  "description": "Recipe for generating token-driven button components.",
   "sizes": {
     "md": {
       "height": 40,
       "paddingX": 16,
       "paddingY": 10,
       "fontSize": 14,
-      "fontWeight": 500
+      "fontWeight": 400
     }
   },
   "variants": {
@@ -20,10 +20,21 @@
       "fillToken": null,
       "textToken": "color.action.primary",
       "strokeToken": "color.action.primary"
+    },
+    "success": {
+      "fillToken": "color.feedback.success",
+      "textToken": "color.text.inverse",
+      "strokeToken": null
     }
   },
   "states": {
     "default": {},
+    "hover": {
+      "useHoverToken": true
+    },
+    "active": {
+      "pressedEffect": true
+    },
     "disabled": {
       "fillOverride": "#737373",
       "textOverride": "#D4D4D4",
