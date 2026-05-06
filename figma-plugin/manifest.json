@@ -1,6 +1,6 @@
 {
   "name": "PRISM Button Generator",
-  "id": "prism-button-generator",
+  "id": "prism-button-generator-local",
   "api": "1.0.0",
   "main": "code.js",
   "ui": "ui.html",

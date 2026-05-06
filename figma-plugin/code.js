@@ -1,67 +1,69 @@
 figma.showUI(__html__, { width: 420, height: 380 });
 
-const primitives = {
-  color: {
-    blue: {
-      "500": { $value: "#0066CC", $type: "color" },
-      "700": { $value: "#004C99", $type: "color" }
-    },
-    red: {
-      "500": { $value: "#E50914", $type: "color" }
-    },
-    amber: {
-      "500": { $value: "#F4A300", $type: "color" }
-    },
-    gray: {
-      "100": { $value: "#F5F5F5", $type: "color" },
-      "500": { $value: "#737373", $type: "color" },
-      "900": { $value: "#111111", $type: "color" }
-    },
-    white: { $value: "#FFFFFF", $type: "color" },
-    black: { $value: "#0A0A0A", $type: "color" }
-  }
-};
-
-const semantic = {
-  color: {
-    action: {
-      primary: { $value: "{color.blue.500}", $type: "color" },
-      "primary-hover": { $value: "{color.blue.700}", $type: "color" }
-    },
-    feedback: {
-      success: { $value: "#00AA44", $type: "color" },
-      warning: { $value: "{color.amber.500}", $type: "color" },
-      danger: { $value: "{color.red.500}", $type: "color" }
-    },
-    text: {
-      primary: { $value: "{color.gray.900}", $type: "color" },
-      inverse: { $value: "{color.white}", $type: "color" }
+const TOKENS = {
+  primitives: {
+    color: {
+      blue: {
+        "500": { $value: "#0066CC" },
+        "700": { $value: "#004C99" }
+      },
+      red: {
+        "500": { $value: "#E50914" }
+      },
+      amber: {
+        "500": { $value: "#F4A300" }
+      },
+      gray: {
+        "100": { $value: "#F5F5F5" },
+        "500": { $value: "#737373" },
+        "900": { $value: "#111111" }
+      },
+      white: { $value: "#FFFFFF" },
+      black: { $value: "#0A0A0A" }
     }
-  }
-};
+  },
 
-const themes = {
-  base: {},
-  entertainment: {
+  semantic: {
     color: {
       action: {
-        primary: { $value: "{color.red.500}", $type: "color" }
+        primary: { $value: "{color.blue.500}" },
+        "primary-hover": { $value: "{color.blue.700}" }
+      },
+      feedback: {
+        success: { $value: "#00AA44" },
+        warning: { $value: "{color.amber.500}" },
+        danger: { $value: "{color.red.500}" }
       },
       text: {
-        primary: { $value: "{color.white}", $type: "color" }
+        primary: { $value: "{color.gray.900}" },
+        inverse: { $value: "{color.white}" }
       }
     }
   },
-  education: {
-    color: {
-      action: {
-        primary: { $value: "{color.amber.500}", $type: "color" }
+
+  themes: {
+    base: {},
+    entertainment: {
+      color: {
+        action: {
+          primary: { $value: "{color.red.500}" }
+        },
+        text: {
+          primary: { $value: "{color.white}" }
+        }
+      }
+    },
+    education: {
+      color: {
+        action: {
+          primary: { $value: "{color.amber.500}" }
+        }
       }
     }
   }
 };
 
-const recipe = {
+const RECIPE = {
   sizes: {
     md: {
       height: 40,
@@ -70,6 +72,7 @@ const recipe = {
       fontSize: 14
     }
   },
+
   variants: {
     primary: {
       fillToken: "color.action.primary",
@@ -87,6 +90,7 @@ const recipe = {
       strokeToken: null
     }
   },
+
   themeOverrides: {
     base: { radius: 6 },
     entertainment: { radius: 0 },
@@ -94,27 +98,26 @@ const recipe = {
   }
 };
 
-function hexToRgb(hex) {
-  const clean = hex.replace("#", "");
-  const bigint = parseInt(clean, 16);
-  return {
-    r: ((bigint >> 16) & 255) / 255,
-    g: ((bigint >> 8) & 255) / 255,
-    b: (bigint & 255) / 255
-  };
-}
-
 function getPath(obj, path) {
-  return path.split(".").reduce((acc, part) => (acc ? acc[part] : null), obj);
+  return path.split(".").reduce((acc, part) => {
+    if (!acc) return null;
+    return acc[part];
+  }, obj);
 }
 
 function resolvePrimitiveReference(refPath) {
-  const node = getPath(primitives, refPath);
+  const node = getPath(TOKENS.primitives, refPath);
   return node ? node.$value : null;
 }
 
 function getThemeOrSemanticNode(tokenPath, themeName) {
-  return getPath(themes[themeName] || {}, tokenPath) || getPath(semantic, tokenPath);
+  const themeNode = getPath(TOKENS.themes[themeName] || {}, tokenPath);
+  if (themeNode) return themeNode;
+
+  const semanticNode = getPath(TOKENS.semantic, tokenPath);
+  if (semanticNode) return semanticNode;
+
+  return null;
 }
 
 function resolveTokenValue(tokenPath, themeName) {
@@ -122,18 +125,38 @@ function resolveTokenValue(tokenPath, themeName) {
   if (!tokenNode) return null;
 
   const value = tokenNode.$value;
+
   if (typeof value === "string" && value.startsWith("{") && value.endsWith("}")) {
-    return resolvePrimitiveReference(value.slice(1, -1));
+    const refPath = value.slice(1, -1);
+    return resolvePrimitiveReference(refPath);
   }
+
   return value;
 }
 
+function hexToRgb(hex) {
+  if (!hex || typeof hex !== "string") {
+    return { r: 0, g: 0, b: 0 };
+  }
+
+  const clean = hex.replace("#", "");
+  const bigint = parseInt(clean, 16);
+
+  return {
+    r: ((bigint >> 16) & 255) / 255,
+    g: ((bigint >> 8) & 255) / 255,
+    b: (bigint & 255) / 255
+  };
+}
+
 function capitalize(value) {
-  return value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+  if (!value || typeof value !== "string") return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 function parseNotes(notes) {
   const lower = (notes || "").toLowerCase();
+
   return {
     bolder: lower.includes("bolder"),
     bold: lower.includes("bold"),
@@ -147,109 +170,143 @@ function parseNotes(notes) {
   };
 }
 
-function applyNoteTweaks(spec) {
-  const parsed = parseNotes(spec.notes || "");
+function sanitizeSpec(rawSpec) {
+  return {
+    componentType: rawSpec.componentType || "button",
+    theme: rawSpec.theme || "base",
+    variant: rawSpec.variant || "primary",
+    state: rawSpec.state || "default",
+    label: rawSpec.label || "Button",
+    notes: rawSpec.notes || ""
+  };
+}
 
-  const computed = {
-    variant: spec.variant || "primary",
-    state: spec.state || "default",
-    theme: spec.theme || "base",
-    label: spec.label || "Button",
+function applyNoteTweaks(rawSpec) {
+  const spec = sanitizeSpec(rawSpec);
+  const parsed = parseNotes(spec.notes);
+
+  const overrides = {
     radius: null,
     fontSize: 14,
     paddingX: 16
   };
 
-  if (parsed.subtle || parsed.quiet) computed.variant = "ghost";
-  if (parsed.loud || parsed.bold) computed.variant = "primary";
-  if (parsed.bolder || parsed.bold) computed.fontSize = 16;
-  if (parsed.cinematic) {
-    computed.radius = 0;
-    computed.paddingX = 20;
+  if (parsed.subtle || parsed.quiet) {
+    spec.variant = "ghost";
   }
-  if (parsed.soft || parsed.friendly) computed.radius = 12;
-  if (parsed.uppercase) computed.label = computed.label.toUpperCase();
 
-  return { ...spec, computed };
+  if (parsed.loud || parsed.bold) {
+    spec.variant = "primary";
+  }
+
+  if (parsed.uppercase) {
+    spec.label = spec.label.toUpperCase();
+  }
+
+  if (parsed.bolder || parsed.bold) {
+    overrides.fontSize = 16;
+  }
+
+  if (parsed.cinematic) {
+    overrides.radius = 0;
+    overrides.paddingX = 20;
+  }
+
+  if (parsed.soft || parsed.friendly) {
+    overrides.radius = 12;
+  }
+
+  return {
+    ...spec,
+    overrides
+  };
 }
 
 async function createButtonFromSpec(rawSpec) {
   const spec = applyNoteTweaks(rawSpec);
 
-  const variant = spec.computed.variant;
-  const state = spec.computed.state;
-  const theme = spec.computed.theme;
-  const label = spec.computed.label;
+  if (spec.componentType !== "button") {
+    throw new Error("Only 'button' is supported.");
+  }
 
-  const size = recipe.sizes.md;
-  const variantConfig = recipe.variants[variant];
-  const themeConfig = recipe.themeOverrides[theme] || recipe.themeOverrides.base;
+  const size = RECIPE.sizes.md;
+  const variantConfig = RECIPE.variants[spec.variant];
+  const themeConfig = RECIPE.themeOverrides[spec.theme] || RECIPE.themeOverrides.base;
 
   if (!variantConfig) {
-    throw new Error(`Unknown variant: ${variant}`);
+    throw new Error(`Unknown variant: ${spec.variant}`);
   }
 
   await figma.loadFontAsync({ family: "Inter", style: "Regular" });
 
   const component = figma.createComponent();
-  component.name = `Button/${capitalize(variant)}/${capitalize(state)}`;
+  component.name = `Button/${capitalize(spec.variant)}/${capitalize(spec.state)}`;
+
   component.layoutMode = "HORIZONTAL";
   component.primaryAxisSizingMode = "AUTO";
   component.counterAxisSizingMode = "AUTO";
-  component.paddingLeft = spec.computed.paddingX;
-  component.paddingRight = spec.computed.paddingX;
+  component.paddingLeft = spec.overrides.paddingX;
+  component.paddingRight = spec.overrides.paddingX;
   component.paddingTop = size.paddingY;
   component.paddingBottom = size.paddingY;
   component.itemSpacing = 8;
-  component.cornerRadius = spec.computed.radius ?? themeConfig.radius;
-  component.minHeight = size.height;
+  component.cornerRadius = spec.overrides.radius ?? themeConfig.radius;
 
-  let fillHex = variantConfig.fillToken ? resolveTokenValue(variantConfig.fillToken, theme) : null;
-  let textHex = variantConfig.textToken ? resolveTokenValue(variantConfig.textToken, theme) : "#111111";
-  let strokeHex = variantConfig.strokeToken ? resolveTokenValue(variantConfig.strokeToken, theme) : null;
+  let fillHex = variantConfig.fillToken
+    ? resolveTokenValue(variantConfig.fillToken, spec.theme)
+    : null;
 
-  if (state === "hover") {
-    if (variant === "primary") fillHex = resolveTokenValue("color.action.primary-hover", theme) || fillHex;
+  let textHex = variantConfig.textToken
+    ? resolveTokenValue(variantConfig.textToken, spec.theme)
+    : "#111111";
+
+  let strokeHex = variantConfig.strokeToken
+    ? resolveTokenValue(variantConfig.strokeToken, spec.theme)
+    : null;
+
+  if (spec.state === "hover" && spec.variant === "primary") {
+    fillHex = resolveTokenValue("color.action.primary-hover", spec.theme) || fillHex;
   }
 
-  if (state === "disabled") {
+  if (spec.state === "disabled") {
     fillHex = "#737373";
     textHex = "#D4D4D4";
-    strokeHex = variant === "ghost" ? "#737373" : null;
+    strokeHex = spec.variant === "ghost" ? "#737373" : null;
   }
 
   if (fillHex) {
-    component.fills = [{ type: "SOLID", color: hexToRgb(fillHex) }];
+    component.fills = [
+      {
+        type: "SOLID",
+        color: hexToRgb(fillHex)
+      }
+    ];
   } else {
     component.fills = [];
   }
 
   if (strokeHex) {
-    component.strokes = [{ type: "SOLID", color: hexToRgb(strokeHex) }];
+    component.strokes = [
+      {
+        type: "SOLID",
+        color: hexToRgb(strokeHex)
+      }
+    ];
     component.strokeWeight = 1.5;
   } else {
     component.strokes = [];
   }
 
-  if (state === "active") {
-    component.effects = [
-      {
-        type: "INNER_SHADOW",
-        color: { r: 0, g: 0, b: 0, a: 0.18 },
-        offset: { x: 0, y: 2 },
-        radius: 6,
-        spread: 0,
-        visible: true,
-        blendMode: "NORMAL"
-      }
-    ];
-  }
-
   const textNode = figma.createText();
   textNode.fontName = { family: "Inter", style: "Regular" };
-  textNode.fontSize = spec.computed.fontSize;
-  textNode.characters = label;
-  textNode.fills = [{ type: "SOLID", color: hexToRgb(textHex) }];
+  textNode.fontSize = spec.overrides.fontSize;
+  textNode.characters = spec.label;
+  textNode.fills = [
+    {
+      type: "SOLID",
+      color: hexToRgb(textHex)
+    }
+  ];
 
   component.appendChild(textNode);
 
@@ -269,12 +326,13 @@ figma.ui.onmessage = async (msg) => {
 
   if (msg.type === "generate-button") {
     try {
-      const spec = JSON.parse(msg.specText);
-      await createButtonFromSpec(spec);
+      const rawSpec = JSON.parse(msg.specText);
+      await createButtonFromSpec(rawSpec);
       figma.notify("Button component generated.");
       figma.closePlugin();
     } catch (error) {
       figma.notify(`Error: ${error.message}`);
+      console.error("PRISM plugin error: - code.js:335", error);
     }
   }
 };

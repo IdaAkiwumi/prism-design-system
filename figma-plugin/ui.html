@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>PRISM Generator</title>
+  <title>PRISM Button Generator</title>
   <style>
     body {
       font-family: Inter, Arial, sans-serif;
@@ -17,15 +17,15 @@
     }
 
     p {
+      margin: 0 0 12px;
       font-size: 12px;
       line-height: 1.5;
       color: #555;
-      margin: 0 0 12px;
     }
 
     textarea {
       width: 100%;
-      height: 220px;
+      height: 240px;
       border: 1px solid #cbd5e1;
       border-radius: 10px;
       padding: 10px;
@@ -62,21 +62,18 @@
   </style>
 </head>
 <body>
-  <h2>PRISM Figma Generator</h2>
+  <h2>PRISM Button Generator</h2>
   <p>
-    Paste the JSON spec from your PRISM GitHub Pages playground to generate a matching button component in Figma.
+    Paste JSON from your PRISM playground and click Generate Button.
   </p>
 
   <textarea id="specInput">
 {
   "componentType": "button",
-  "theme": "base",
+  "theme": "entertainment",
   "variant": "primary",
   "state": "default",
   "label": "Approve",
-  "badgeState": "success",
-  "cardTitle": "Absence notification",
-  "cardBody": "This card shows how typography, badges, spacing, and buttons work together in one token-driven component.",
   "notes": ""
 }
   </textarea>
@@ -89,6 +86,7 @@
   <script>
     document.getElementById("generateBtn").onclick = () => {
       const specText = document.getElementById("specInput").value;
+
       parent.postMessage(
         {
           pluginMessage: {
