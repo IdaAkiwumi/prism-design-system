@@ -2,11 +2,6 @@ const form = document.getElementById("specForm");
 const jsonOutput = document.getElementById("jsonOutput");
 const copyJsonBtn = document.getElementById("copyJsonBtn");
 const downloadJsonBtn = document.getElementById("downloadJsonBtn");
-const updateEmbedBtn = document.getElementById("updateEmbedBtn");
-
-const figmaUrlInput = document.getElementById("figmaUrl");
-const figmaEmbed = document.getElementById("figmaEmbed");
-const embedPlaceholder = document.getElementById("embedPlaceholder");
 
 const themePreviewSurface = document.getElementById("themePreviewSurface");
 const uiCard = document.getElementById("uiCard");
@@ -15,6 +10,14 @@ const previewBody = document.getElementById("previewBody");
 const previewBadge = document.getElementById("previewBadge");
 const livePreviewButton = document.getElementById("livePreviewButton");
 const secondaryPreviewButton = document.getElementById("secondaryPreviewButton");
+const figmaEmbed = document.getElementById("figmaEmbed");
+
+/*
+  PASTE YOUR OWN FIGMA FILE URL HERE.
+  Example:
+  const FIGMA_FILE_URL = "https://www.figma.com/design/ABC123XYZ/PRISM-Design-System?node-id=1-2";
+*/
+const FIGMA_FILE_URL = "https://www.figma.com/design/UKSBj9G6nXoBrjQKKuFPWS/Prism-Design-System---Agentic-UI-Pattern-Example?node-id=0-1&t=VrDGGgsvbFo0A4LK-1";
 
 const themeMap = {
   base: {
@@ -28,38 +31,32 @@ const themeMap = {
     textPrimary: "#111111",
     textInverse: "#FFFFFF",
     textDisabled: "#D4D4D4",
-    surfaceRaised: "#F5F5F5",
-    cardBackground: "#FFFFFF",
     defaultRadius: 6
   },
   entertainment: {
     surfaceClass: "theme-entertainment-surface",
     cardClass: "theme-entertainment-card",
     actionPrimary: "#E50914",
-    actionPrimaryHover: "#b50710",
+    actionPrimaryHover: "#B50710",
     success: "#00AA44",
     warning: "#F4A300",
     danger: "#E50914",
     textPrimary: "#FFFFFF",
     textInverse: "#FFFFFF",
     textDisabled: "#9CA3AF",
-    surfaceRaised: "#1A1A1A",
-    cardBackground: "#1A1A1A",
     defaultRadius: 0
   },
   education: {
     surfaceClass: "theme-education-surface",
     cardClass: "theme-education-card",
     actionPrimary: "#F4A300",
-    actionPrimaryHover: "#d48d00",
+    actionPrimaryHover: "#D48D00",
     success: "#00AA44",
     warning: "#F4A300",
     danger: "#E50914",
     textPrimary: "#111111",
     textInverse: "#111111",
     textDisabled: "#9CA3AF",
-    surfaceRaised: "#FFF7E8",
-    cardBackground: "#FFF7E8",
     defaultRadius: 10
   }
 };
@@ -141,7 +138,7 @@ function buildSpec() {
   };
 }
 
-function badgeConfigForState(themeTokens, badgeState) {
+function badgeConfigForState(badgeState) {
   if (badgeState === "warning") {
     return {
       className: "badge-warning",
@@ -165,7 +162,7 @@ function badgeConfigForState(themeTokens, badgeState) {
 function applyPreview(spec) {
   const finalSpec = applyNoteTweaks(spec);
   const themeTokens = themeMap[finalSpec.computed.theme] || themeMap.base;
-  const badge = badgeConfigForState(themeTokens, finalSpec.computed.badgeState);
+  const badge = badgeConfigForState(finalSpec.computed.badgeState);
 
   themePreviewSurface.className = `preview-surface ${themeTokens.surfaceClass}`;
   uiCard.className = `ui-card ${themeTokens.cardClass}`;
@@ -236,7 +233,9 @@ function renderSpec() {
 }
 
 function toEmbedUrl(url) {
-  if (!url) return "";
+  if (!url || url === "PASTE_YOUR_FIGMA_FILE_URL_HERE") {
+    return "";
+  }
 
   let embedUrl = url.trim();
 
@@ -247,7 +246,7 @@ function toEmbedUrl(url) {
   }
 
   if (!embedUrl.includes("embed-host=")) {
-    embedUrl += (embedUrl.includes("?") ? "&" : "?") + "embed-host=prism-github-pages";
+    embedUrl += (embedUrl.includes("?") ? "&" : "?") + "embed-host=prism-playground";
   }
 
   if (!embedUrl.includes("theme=")) {
@@ -265,21 +264,12 @@ function toEmbedUrl(url) {
   return embedUrl;
 }
 
-function updateEmbed() {
-  const rawUrl = figmaUrlInput.value.trim();
+function loadFigmaEmbed() {
+  const embedUrl = toEmbedUrl(FIGMA_FILE_URL);
 
-  if (!rawUrl) {
-    figmaEmbed.src = "";
-    figmaEmbed.classList.add("hidden");
-    embedPlaceholder.classList.remove("hidden");
-    embedPlaceholder.innerHTML = 'Paste your Figma file link on the left, then click <strong>Update Figma Embed</strong>.';
-    return;
+  if (embedUrl) {
+    figmaEmbed.src = embedUrl;
   }
-
-  const embedUrl = toEmbedUrl(rawUrl);
-  figmaEmbed.src = embedUrl;
-  figmaEmbed.classList.remove("hidden");
-  embedPlaceholder.classList.add("hidden");
 }
 
 form.addEventListener("submit", function (event) {
@@ -313,10 +303,6 @@ downloadJsonBtn.addEventListener("click", function () {
   URL.revokeObjectURL(url);
 });
 
-updateEmbedBtn.addEventListener("click", function () {
-  updateEmbed();
-});
-
 [
   "theme",
   "variant",
@@ -327,8 +313,10 @@ updateEmbedBtn.addEventListener("click", function () {
   "cardBody",
   "notes"
 ].forEach((id) => {
-  document.getElementById(id).addEventListener("input", renderSpec);
-  document.getElementById(id).addEventListener("change", renderSpec);
+  const el = document.getElementById(id);
+  el.addEventListener("input", renderSpec);
+  el.addEventListener("change", renderSpec);
 });
 
 renderSpec();
+loadFigmaEmbed();

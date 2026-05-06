@@ -116,21 +116,9 @@
               placeholder="Examples: make it bolder and more cinematic, soft and friendly, quiet secondary action, uppercase"
             ></textarea>
             <p class="helper-text">
-              Notes can tweak the result. Example keywords: <strong>bolder</strong>,
-              <strong>cinematic</strong>, <strong>soft</strong>, <strong>quiet</strong>, <strong>uppercase</strong>.
-            </p>
-          </div>
-
-          <div class="field">
-            <label for="figmaUrl">Figma file or frame URL</label>
-            <input
-              id="figmaUrl"
-              name="figmaUrl"
-              type="text"
-              placeholder="Paste your Figma file URL here"
-            />
-            <p class="helper-text">
-              Paste your standard Figma file URL. The page converts it into an embed automatically.
+              Notes can tweak the result. Example keywords:
+              <strong>bolder</strong>, <strong>cinematic</strong>,
+              <strong>soft</strong>, <strong>quiet</strong>, <strong>uppercase</strong>.
             </p>
           </div>
 
@@ -138,7 +126,6 @@
             <button type="submit" class="btn btn-primary">Generate Preview</button>
             <button type="button" id="copyJsonBtn" class="btn btn-secondary">Copy JSON</button>
             <button type="button" id="downloadJsonBtn" class="btn btn-secondary">Download JSON</button>
-            <button type="button" id="updateEmbedBtn" class="btn btn-secondary">Update Figma Embed</button>
           </div>
         </form>
 
@@ -159,13 +146,11 @@
               This preview updates instantly in the browser, so reviewers can see the system working without needing plugin access.
             </p>
           </div>
- <p class="ui-kicker">Agentic UI Pattern</p>
+
           <div id="themePreviewSurface" class="preview-surface">
-             
             <div id="uiCard" class="ui-card">
               <div class="ui-card-top">
                 <div class="ui-card-copy">
-                
                   <h3 id="previewTitle" class="ui-title">Absence notification</h3>
                 </div>
                 <span id="previewBadge" class="status-badge">Recently approved</span>
@@ -174,8 +159,6 @@
               <p id="previewBody" class="ui-body">
                 This card shows how typography, badges, spacing, and buttons work together in one token-driven component.
               </p>
-
-              
 
               <div class="button-row">
                 <button id="livePreviewButton" class="preview-button">Approve</button>
@@ -189,17 +172,13 @@
           <div class="section-heading">
             <h2>Embedded Figma File</h2>
             <p>
-              Use this to show your token architecture, components, variants, and pre-built examples inside your public Figma file.
+              This shows the public Figma file with token architecture, components, variants, and pre-built examples.
             </p>
-          </div>
-
-          <div id="embedPlaceholder" class="embed-placeholder">
-            Paste your Figma file link on the left, then click <strong>Update Figma Embed</strong>.
           </div>
 
           <iframe
             id="figmaEmbed"
-            class="figma-embed hidden"
+            class="figma-embed"
             src=""
             allowfullscreen
           ></iframe>

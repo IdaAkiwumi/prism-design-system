@@ -202,15 +202,6 @@ textarea {
   align-items: flex-start;
 }
 
-.ui-kicker {
-  margin: 0 0 8px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  opacity: 0.72;
-}
-
 .ui-title {
   margin: 0;
   font-size: 24px;
@@ -221,22 +212,6 @@ textarea {
   margin: 14px 0 18px;
   font-size: 15px;
   line-height: 1.6;
-}
-
-.meta-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 18px;
-  font-size: 13px;
-}
-
-.meta-label {
-  opacity: 0.72;
-}
-
-.meta-value {
-  font-weight: 700;
 }
 
 .status-badge {
@@ -287,28 +262,12 @@ textarea {
   min-height: 760px;
 }
 
-.embed-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 620px;
-  border: 1px dashed #cbd5e1;
-  border-radius: 14px;
-  background: #f8fafc;
-  color: #64748b;
-  text-align: center;
-  padding: 24px;
-}
-
 .figma-embed {
   width: 100%;
   height: 620px;
   border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 14px;
-}
-
-.hidden {
-  display: none;
+  background: #ffffff;
 }
 
 .theme-base-surface {
@@ -381,9 +340,7 @@ textarea {
     flex-direction: column;
   }
 
-  .embed-placeholder,
   .figma-embed {
-    min-height: 440px;
     height: 440px;
   }
 }
