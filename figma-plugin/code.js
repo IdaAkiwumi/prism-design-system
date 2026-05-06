@@ -1,6 +1,6 @@
 figma.showUI(__html__, { width: 420, height: 380 });
 
-const TOKENS = {
+var TOKENS = {
   primitives: {
     color: {
       blue: {
@@ -63,7 +63,7 @@ const TOKENS = {
   }
 };
 
-const RECIPE = {
+var RECIPE = {
   sizes: {
     md: {
       height: 40,
@@ -99,35 +99,48 @@ const RECIPE = {
 };
 
 function getPath(obj, path) {
-  return path.split(".").reduce((acc, part) => {
-    if (!acc) return null;
-    return acc[part];
-  }, obj);
+  var parts = path.split(".");
+  var current = obj;
+  var i;
+
+  for (i = 0; i < parts.length; i++) {
+    if (!current) return null;
+    current = current[parts[i]];
+  }
+
+  return current;
 }
 
 function resolvePrimitiveReference(refPath) {
-  const node = getPath(TOKENS.primitives, refPath);
+  var node = getPath(TOKENS.primitives, refPath);
   return node ? node.$value : null;
 }
 
 function getThemeOrSemanticNode(tokenPath, themeName) {
-  const themeNode = getPath(TOKENS.themes[themeName] || {}, tokenPath);
+  var themeNode = getPath(TOKENS.themes[themeName] || {}, tokenPath);
   if (themeNode) return themeNode;
 
-  const semanticNode = getPath(TOKENS.semantic, tokenPath);
+  var semanticNode = getPath(TOKENS.semantic, tokenPath);
   if (semanticNode) return semanticNode;
 
   return null;
 }
 
 function resolveTokenValue(tokenPath, themeName) {
-  const tokenNode = getThemeOrSemanticNode(tokenPath, themeName);
+  var tokenNode = getThemeOrSemanticNode(tokenPath, themeName);
+  var value;
+  var refPath;
+
   if (!tokenNode) return null;
 
-  const value = tokenNode.$value;
+  value = tokenNode.$value;
 
-  if (typeof value === "string" && value.startsWith("{") && value.endsWith("}")) {
-    const refPath = value.slice(1, -1);
+  if (
+    typeof value === "string" &&
+    value.indexOf("{") === 0 &&
+    value.lastIndexOf("}") === value.length - 1
+  ) {
+    refPath = value.substring(1, value.length - 1);
     return resolvePrimitiveReference(refPath);
   }
 
@@ -135,12 +148,15 @@ function resolveTokenValue(tokenPath, themeName) {
 }
 
 function hexToRgb(hex) {
+  var clean;
+  var bigint;
+
   if (!hex || typeof hex !== "string") {
     return { r: 0, g: 0, b: 0 };
   }
 
-  const clean = hex.replace("#", "");
-  const bigint = parseInt(clean, 16);
+  clean = hex.replace("#", "");
+  bigint = parseInt(clean, 16);
 
   return {
     r: ((bigint >> 16) & 255) / 255,
@@ -155,18 +171,18 @@ function capitalize(value) {
 }
 
 function parseNotes(notes) {
-  const lower = (notes || "").toLowerCase();
+  var lower = (notes || "").toLowerCase();
 
   return {
-    bolder: lower.includes("bolder"),
-    bold: lower.includes("bold"),
-    cinematic: lower.includes("cinematic"),
-    soft: lower.includes("soft"),
-    friendly: lower.includes("friendly"),
-    subtle: lower.includes("subtle"),
-    quiet: lower.includes("quiet"),
-    loud: lower.includes("loud"),
-    uppercase: lower.includes("uppercase")
+    bolder: lower.indexOf("bolder") !== -1,
+    bold: lower.indexOf("bold") !== -1,
+    cinematic: lower.indexOf("cinematic") !== -1,
+    soft: lower.indexOf("soft") !== -1,
+    friendly: lower.indexOf("friendly") !== -1,
+    subtle: lower.indexOf("subtle") !== -1,
+    quiet: lower.indexOf("quiet") !== -1,
+    loud: lower.indexOf("loud") !== -1,
+    uppercase: lower.indexOf("uppercase") !== -1
   };
 }
 
@@ -182,10 +198,9 @@ function sanitizeSpec(rawSpec) {
 }
 
 function applyNoteTweaks(rawSpec) {
-  const spec = sanitizeSpec(rawSpec);
-  const parsed = parseNotes(spec.notes);
-
-  const overrides = {
+  var spec = sanitizeSpec(rawSpec);
+  var parsed = parseNotes(spec.notes);
+  var overrides = {
     radius: null,
     fontSize: 14,
     paddingX: 16
@@ -216,32 +231,37 @@ function applyNoteTweaks(rawSpec) {
     overrides.radius = 12;
   }
 
-  return {
-    ...spec,
-    overrides
-  };
+  spec.overrides = overrides;
+  return spec;
 }
 
 async function createButtonFromSpec(rawSpec) {
-  const spec = applyNoteTweaks(rawSpec);
+  var spec = applyNoteTweaks(rawSpec);
+  var size;
+  var variantConfig;
+  var themeConfig;
+  var component;
+  var textNode;
+  var fillHex;
+  var textHex;
+  var strokeHex;
 
   if (spec.componentType !== "button") {
     throw new Error("Only 'button' is supported.");
   }
 
-  const size = RECIPE.sizes.md;
-  const variantConfig = RECIPE.variants[spec.variant];
-  const themeConfig = RECIPE.themeOverrides[spec.theme] || RECIPE.themeOverrides.base;
+  size = RECIPE.sizes.md;
+  variantConfig = RECIPE.variants[spec.variant];
+  themeConfig = RECIPE.themeOverrides[spec.theme] || RECIPE.themeOverrides.base;
 
   if (!variantConfig) {
-    throw new Error(`Unknown variant: ${spec.variant}`);
+    throw new Error("Unknown variant: " + spec.variant);
   }
 
   await figma.loadFontAsync({ family: "Inter", style: "Regular" });
 
-  const component = figma.createComponent();
-  component.name = `Button/${capitalize(spec.variant)}/${capitalize(spec.state)}`;
-
+  component = figma.createComponent();
+  component.name = "Button/" + capitalize(spec.variant) + "/" + capitalize(spec.state);
   component.layoutMode = "HORIZONTAL";
   component.primaryAxisSizingMode = "AUTO";
   component.counterAxisSizingMode = "AUTO";
@@ -250,17 +270,17 @@ async function createButtonFromSpec(rawSpec) {
   component.paddingTop = size.paddingY;
   component.paddingBottom = size.paddingY;
   component.itemSpacing = 8;
-  component.cornerRadius = spec.overrides.radius ?? themeConfig.radius;
+  component.cornerRadius = spec.overrides.radius !== null ? spec.overrides.radius : themeConfig.radius;
 
-  let fillHex = variantConfig.fillToken
+  fillHex = variantConfig.fillToken
     ? resolveTokenValue(variantConfig.fillToken, spec.theme)
     : null;
 
-  let textHex = variantConfig.textToken
+  textHex = variantConfig.textToken
     ? resolveTokenValue(variantConfig.textToken, spec.theme)
     : "#111111";
 
-  let strokeHex = variantConfig.strokeToken
+  strokeHex = variantConfig.strokeToken
     ? resolveTokenValue(variantConfig.strokeToken, spec.theme)
     : null;
 
@@ -297,7 +317,7 @@ async function createButtonFromSpec(rawSpec) {
     component.strokes = [];
   }
 
-  const textNode = figma.createText();
+  textNode = figma.createText();
   textNode.fontName = { family: "Inter", style: "Regular" };
   textNode.fontSize = spec.overrides.fontSize;
   textNode.characters = spec.label;
@@ -318,7 +338,7 @@ async function createButtonFromSpec(rawSpec) {
   figma.viewport.scrollAndZoomIntoView([component]);
 }
 
-figma.ui.onmessage = async (msg) => {
+figma.ui.onmessage = async function (msg) {
   if (msg.type === "cancel") {
     figma.closePlugin();
     return;
@@ -326,13 +346,13 @@ figma.ui.onmessage = async (msg) => {
 
   if (msg.type === "generate-button") {
     try {
-      const rawSpec = JSON.parse(msg.specText);
+      var rawSpec = JSON.parse(msg.specText);
       await createButtonFromSpec(rawSpec);
       figma.notify("Button component generated.");
       figma.closePlugin();
     } catch (error) {
-      figma.notify(`Error: ${error.message}`);
-      console.error("PRISM plugin error: - code.js:335", error);
+      figma.notify("Error: " + error.message);
+      console.error("PRISM plugin error: - code.js:355", error);
     }
   }
 };
