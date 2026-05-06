@@ -195,7 +195,7 @@ async function createButtonFromSpec(spec) {
     throw new Error(`Unknown variant: ${variant}`);
   }
 
-  await figma.loadFontAsync({ family: "Inter", style: "Medium" });
+  await figma.loadFontAsync({ family: "Inter", style: "Regular" });
 
   const component = figma.createComponent();
   component.name = `Button/${capitalize(variant)}/${capitalize(state)}`;
@@ -249,7 +249,7 @@ async function createButtonFromSpec(spec) {
 
   const textNode = figma.createText();
   textNode.characters = label;
-  textNode.fontName = { family: "Inter", style: "Medium" };
+  textNode.fontName = { family: "Inter", style: "Regular" };
   textNode.fontSize = size.fontSize;
 
   if (!textHex) {
