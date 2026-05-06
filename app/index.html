@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRISM Component Spec Builder</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="hero">
+      <h1>PRISM Component Spec Builder</h1>
+      <p>
+        Use this form to generate a JSON spec for a token-driven Figma button component.
+      </p>
+    </header>
+
+    <section class="card">
+      <form id="specForm">
+        <div class="field">
+          <label for="componentType">Component type</label>
+          <select id="componentType" name="componentType">
+            <option value="button" selected>Button</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="variant">Variant</label>
+          <select id="variant" name="variant">
+            <option value="primary" selected>Primary</option>
+            <option value="ghost">Ghost</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="state">State</label>
+          <select id="state" name="state">
+            <option value="default" selected>Default</option>
+            <option value="disabled">Disabled</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="theme">Theme</label>
+          <select id="theme" name="theme">
+            <option value="base" selected>Base</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="education">Education</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="label">Label text</label>
+          <input
+            id="label"
+            name="label"
+            type="text"
+            placeholder="Approve"
+            value="Approve"
+          />
+        </div>
+
+        <div class="field">
+          <label for="notes">Optional notes</label>
+          <textarea
+            id="notes"
+            name="notes"
+            rows="4"
+            placeholder="Make this feel bold and cinematic"
+          ></textarea>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Generate JSON</button>
+          <button type="button" id="copyJsonBtn" class="btn btn-secondary">Copy JSON</button>
+          <button type="button" id="downloadJsonBtn" class="btn btn-secondary">Download JSON</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card output-card">
+      <div class="output-header">
+        <h2>Generated Spec</h2>
+        <p>Paste this into the Figma plugin.</p>
+      </div>
+      <pre id="jsonOutput" class="code-block"></pre>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
