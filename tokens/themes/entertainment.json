@@ -1,0 +1,31 @@
+{
+  "$description": "Entertainment theme. Covers film, streaming, gaming. Dark surfaces, cinematic red, bold typography.",
+  "color": {
+    "action": {
+      "primary": {
+        "$value": "{color.red.500}",
+        "$type": "color",
+        "$description": "Entertainment primary: cinematic red. Bold, urgent, dramatic."
+      }
+    },
+    "text": {
+      "primary": {
+        "$value": "{color.white}",
+        "$type": "color",
+        "$description": "Primary text on dark entertainment surfaces."
+      }
+    },
+    "surface": {
+      "default": {
+        "$value": "{color.black}",
+        "$type": "color",
+        "$description": "Immersive dark canvas. Film and streaming standard."
+      },
+      "raised": {
+        "$value": "#1A1A1A",
+        "$type": "color",
+        "$description": "Cards and elevated elements on dark surface."
+      }
+    }
+  }
+}

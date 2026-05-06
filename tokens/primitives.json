@@ -1,0 +1,41 @@
+{
+  "color": {
+    "blue": {
+      "500": { "$value": "#0066CC", "$type": "color" },
+      "700": { "$value": "#004C99", "$type": "color" }
+    },
+    "red": {
+      "500": { "$value": "#E50914", "$type": "color" }
+    },
+    "amber": {
+      "500": { "$value": "#F4A300", "$type": "color" }
+    },
+    "gray": {
+      "100": { "$value": "#F5F5F5", "$type": "color" },
+      "500": { "$value": "#737373", "$type": "color" },
+      "900": { "$value": "#111111", "$type": "color" }
+    },
+    "white": { "$value": "#FFFFFF", "$type": "color" },
+    "black": { "$value": "#0A0A0A", "$type": "color" }
+  },
+  "spacing": {
+    "8":  { "$value": "8",  "$type": "dimension" },
+    "16": { "$value": "16", "$type": "dimension" },
+    "24": { "$value": "24", "$type": "dimension" }
+  },
+  "motion": {
+    "duration": {
+      "fast":     { "$value": "200ms", "$type": "duration",
+        "$description": "Micro-interactions: buttons, toggles, badges." },
+      "moderate": { "$value": "300ms", "$type": "duration",
+        "$description": "Modals, drawers, page transitions." }
+    },
+    "easing": {
+      "standard": {
+        "$value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "$type": "cubicBezier",
+        "$description": "Default easing for all transitions."
+      }
+    }
+  }
+}
