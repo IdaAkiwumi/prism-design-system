@@ -70,12 +70,9 @@ This design system is not a static Figma file – it's infrastructure that feeds
 - Figma – Plugin API, local development
 - Hosting – GitHub Pages
 
-## Why this matter
+## Why this matters
 
-> "This is not a traditional design system librarian role. You are building machine‑readable design infrastructure that enables Product Builders, engineers, and AI tools to ship production‑quality UI faster than any of them could alone."
-
-PRISM exactly matches that philosophy:
-
+> 
     ✅ One source of truth (ai-rules.md)
     ✅ Tokens carry intent descriptions for AI agents
     ✅ Theme switching without forking components
