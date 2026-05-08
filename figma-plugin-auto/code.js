@@ -1,4 +1,4 @@
-// PRISM Figma Plugin – Creates components (no component sets, works reliably)
+// PRISM Figma Plugin – Creates components with correct text colour
 const CATALOG_URL = 'https://raw.githubusercontent.com/idaakiwumi/prism-design-system/main/generated/component-catalog.json';
 
 figma.showUI(__html__, { width: 400, height: 300 });
@@ -41,22 +41,22 @@ async function createComponent(comp, center) {
   const existing = figma.currentPage.findOne(n => n.name === name);
   if (existing) existing.remove();
 
-  // Create a frame (will become the component)
+  // Create a frame (to be turned into a component)
   const frame = figma.createFrame();
   frame.name = name;
   frame.resize(120, 40);
   frame.x = center.x - 100;
   frame.y = center.y - 50;
-  frame.fills = [{ type: 'SOLID', color: { r: 0.95, g: 0.95, b: 0.95 } }]; // light grey background for visibility
+  frame.fills = [{ type: 'SOLID', color: { r: 0, g: 0.4, b: 0.8 } }]; // Base theme primary (#0066CC)
 
-  // Background rectangle (simulating button background)
+  // Background rectangle (same as frame fill, but explicit)
   const bg = figma.createRectangle();
   bg.resize(120, 40);
-  bg.fills = [{ type: 'SOLID', color: { r: 0, g: 0.4, b: 0.8 } }]; // blue
+  bg.fills = [{ type: 'SOLID', color: { r: 0, g: 0.4, b: 0.8 } }];
   bg.name = "Background";
   frame.appendChild(bg);
 
-  // Text label
+  // Text label – set colour to white
   await loadFont();
   const text = figma.createText();
   await figma.loadFontAsync({ family: "Inter", style: "Regular" });
@@ -65,13 +65,15 @@ async function createComponent(comp, center) {
   text.x = 10;
   text.y = 10;
   text.name = "Label";
+  // **THIS IS THE FIX: set text fill to white**
+  text.fills = [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }];
   frame.appendChild(text);
 
   // Convert the frame to a component
   const component = figma.createComponentFromNode(frame);
   component.name = name;
 
-  // Add metadata as component description (visible in Figma Dev Mode)
+  // Add metadata as component description
   const { props, tokenMapping, accessibility } = comp;
   const desc = [];
   if (props && props.length) desc.push(`Props: ${JSON.stringify(props, null, 2)}`);
