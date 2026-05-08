@@ -1,4 +1,4 @@
-// PRISM Figma Plugin – Safe component creator
+// PRISM Figma Plugin – Safe component creator (no optional chaining)
 const CATALOG_URL = 'https://raw.githubusercontent.com/idaakiwumi/prism-design-system/main/generated/component-catalog.json';
 
 figma.showUI(__html__, { width: 400, height: 300 });
@@ -7,7 +7,6 @@ function log(message) {
   figma.ui.postMessage({ type: 'log', text: message });
 }
 
-// Load a known font once
 let fontLoaded = false;
 async function loadFont() {
   if (fontLoaded) return;
@@ -35,37 +34,36 @@ async function fetchCatalog() {
 }
 
 async function createComponent(comp, center) {
-  const name = comp.name; // e.g., "button_component"
+  const name = comp.name;
   if (!name) throw new Error("Component has no name");
 
-  // 1. Remove any existing node with the same name (to avoid conflicts)
+  // Remove any existing node with the same name
   const existing = figma.currentPage.findOne(n => n.name === name);
   if (existing) {
     existing.remove();
     log(`Removed old node: ${name}`);
   }
 
-  // 2. Create a new component set
+  // Create a new component set
   const componentSet = figma.createComponentSet();
   componentSet.name = name;
   componentSet.x = center.x - 100;
   componentSet.y = center.y - 50;
 
-  // 3. Create one variant (primary/default)
+  // Create one variant (primary/default)
   const variant = componentSet.createVariant();
   variant.name = "variant=primary, state=default, size=medium";
 
-  // 4. Background rectangle (placeholder blue)
+  // Background rectangle (placeholder blue)
   const bg = figma.createRectangle();
   bg.resize(120, 40);
   bg.fills = [{ type: 'SOLID', color: { r: 0, g: 0.4, b: 0.8 } }];
   bg.name = "Background";
   variant.appendChild(bg);
 
-  // 5. Text label
+  // Text label
   await loadFont();
   const text = figma.createText();
-  // Explicitly set font to the loaded one
   await figma.loadFontAsync({ family: "Inter", style: "Regular" });
   text.fontName = { family: "Inter", style: "Regular" };
   text.characters = "Button";
@@ -74,10 +72,10 @@ async function createComponent(comp, center) {
   text.name = "Label";
   variant.appendChild(text);
 
-  // 6. Add metadata as component description
+  // Metadata as component description
   const { props, tokenMapping, accessibility } = comp;
   const desc = [];
-  if (props?.length) desc.push(`Props: ${JSON.stringify(props, null, 2)}`);
+  if (props && props.length) desc.push(`Props: ${JSON.stringify(props, null, 2)}`);
   if (tokenMapping && Object.keys(tokenMapping).length) desc.push(`Tokens: ${JSON.stringify(tokenMapping, null, 2)}`);
   if (accessibility) desc.push(`Accessibility: ${accessibility}`);
   variant.description = desc.join('\n\n');
