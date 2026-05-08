@@ -160,15 +160,26 @@ function generateCSSVariables(themes) {
 }
 
 // ============================================
-// 7. NEW: EXTRACT COMPONENT CATALOG FOR FIGMA
+// 7. NEW: EXTRACT COMPONENT CATALOG FOR FIGMA (fixed for multi‑word names)
 // ============================================
 function extractComponentsCatalog(markdown) {
   const components = [];
-  const componentSections = markdown.split(/\n### ([A-Za-z]+)\n/);
-  for (let i = 1; i < componentSections.length; i += 2) {
-    const name = componentSections[i].toLowerCase();
-    const content = componentSections[i+1];
+  // Split by "### " (three hashes and a space) – captures any heading line
+  const sections = markdown.split(/\n### /);
+  // First element is text before first heading, skip it
+  for (let i = 1; i < sections.length; i++) {
+    const section = sections[i];
+    const headingEnd = section.indexOf('\n');
+    if (headingEnd === -1) continue;
+    const rawName = section.substring(0, headingEnd).trim();
+    const content = section.substring(headingEnd + 1);
+    
+    // Use the full heading as component name (e.g., "Button Component")
+    const name = rawName.toLowerCase().replace(/\s+/g, '_'); // store as button_component
+    
     const component = { name, props: [], tokenMapping: {}, accessibility: '', description: '' };
+    
+    // 1. Extract props table (must have exactly these columns)
     const tableRegex = /\|\s*([a-z]+)\s*\|\s*(enum|boolean|string)\s*\|\s*([^\|]+)\s*\|\s*([^\|]+)\s*\|\s*([^\|]+)\s*\|/gi;
     let match;
     while ((match = tableRegex.exec(content)) !== null) {
@@ -180,6 +191,8 @@ function extractComponentsCatalog(markdown) {
         description: match[5].trim()
       });
     }
+    
+    // 2. Extract token mapping block
     const tokenMatch = content.match(/\*\*Token mapping:\*\*([\s\S]*?)(?=\n\*\*|$)/);
     if (tokenMatch) {
       const lines = tokenMatch[1].split('\n');
@@ -192,9 +205,15 @@ function extractComponentsCatalog(markdown) {
         }
       });
     }
+    
+    // 3. Extract accessibility block
     const a11yMatch = content.match(/\*\*Accessibility:\*\*([\s\S]*?)(?=\n\*\*|$)/);
     if (a11yMatch) component.accessibility = a11yMatch[1].trim();
-    components.push(component);
+    
+    // Only add component if it has at least a table or token mapping
+    if (component.props.length > 0 || Object.keys(component.tokenMapping).length > 0) {
+      components.push(component);
+    }
   }
   return components;
 }
@@ -202,19 +221,19 @@ function extractComponentsCatalog(markdown) {
 // ============================================
 // RUN ALL EXTRACTIONS
 // ============================================
-console.log('📝 Extracting primitives... - parse-spec.js:205');
+console.log('📝 Extracting primitives... - parse-spec.js:224');
 const primitives = extractPrimitives(markdown);
-console.log('📝 Extracting semantic tokens... - parse-spec.js:207');
+console.log('📝 Extracting semantic tokens... - parse-spec.js:226');
 const semantic = extractSemantic(markdown);
-console.log('📝 Extracting themes... - parse-spec.js:209');
+console.log('📝 Extracting themes... - parse-spec.js:228');
 const themes = extractThemes(markdown);
-console.log('📝 Extracting component contracts (legacy)... - parse-spec.js:211');
+console.log('📝 Extracting component contracts (legacy)... - parse-spec.js:230');
 const componentsLegacy = extractComponents(markdown);
-console.log('📝 Extracting AI rules... - parse-spec.js:213');
+console.log('📝 Extracting AI rules... - parse-spec.js:232');
 const aiRules = extractAIRules(markdown);
-console.log('📝 Extracting component catalog for Figma... - parse-spec.js:215');
+console.log('📝 Extracting component catalog for Figma... - parse-spec.js:234');
 const componentCatalog = extractComponentsCatalog(markdown);
-console.log('📝 Generating CSS variables... - parse-spec.js:217');
+console.log('📝 Generating CSS variables... - parse-spec.js:236');
 const cssVariables = generateCSSVariables(themes);
 
 // ============================================
@@ -229,31 +248,31 @@ dirs.forEach(dir => {
 // WRITE ALL GENERATED FILES
 // ============================================
 fs.writeFileSync('tokens/primitives.json', JSON.stringify(primitives, null, 2));
-console.log('✅ Written: tokens/primitives.json - parse-spec.js:232');
+console.log('✅ Written: tokens/primitives.json - parse-spec.js:251');
 
 fs.writeFileSync('tokens/semantic.json', JSON.stringify(semantic, null, 2));
-console.log('✅ Written: tokens/semantic.json - parse-spec.js:235');
+console.log('✅ Written: tokens/semantic.json - parse-spec.js:254');
 
 Object.entries(themes).forEach(([themeName, themeValues]) => {
   fs.writeFileSync(`tokens/themes/${themeName}.json`, JSON.stringify(themeValues, null, 2));
-  console.log(`✅ Written: tokens/themes/${themeName}.json - parse-spec.js:239`);
+  console.log(`✅ Written: tokens/themes/${themeName}.json - parse-spec.js:258`);
 });
 
 if (Object.keys(componentsLegacy).length > 0) {
   fs.writeFileSync('generated/components-legacy.json', JSON.stringify(componentsLegacy, null, 2));
-  console.log('✅ Written: generated/componentslegacy.json - parse-spec.js:244');
+  console.log('✅ Written: generated/componentslegacy.json - parse-spec.js:263');
 } else {
-  console.log('ℹ️ No legacy component contracts found  skipping - parse-spec.js:246');
+  console.log('ℹ️ No legacy component contracts found  skipping - parse-spec.js:265');
 }
 
 fs.writeFileSync('generated/ai-rules.json', JSON.stringify(aiRules, null, 2));
-console.log('✅ Written: generated/airules.json - parse-spec.js:250');
+console.log('✅ Written: generated/airules.json - parse-spec.js:269');
 
 fs.writeFileSync('generated/prism-variables.css', cssVariables);
-console.log('✅ Written: generated/prismvariables.css - parse-spec.js:253');
+console.log('✅ Written: generated/prismvariables.css - parse-spec.js:272');
 
 fs.writeFileSync('generated/component-catalog.json', JSON.stringify(componentCatalog, null, 2));
-console.log('✅ Written: generated/componentcatalog.json - parse-spec.js:256');
+console.log('✅ Written: generated/componentcatalog.json - parse-spec.js:275');
 
 const summary = {
   generatedAt: new Date().toISOString(),
@@ -273,12 +292,12 @@ const summary = {
   }
 };
 fs.writeFileSync('generated/spec-summary.json', JSON.stringify(summary, null, 2));
-console.log('✅ Written: generated/specsummary.json - parse-spec.js:276');
+console.log('✅ Written: generated/specsummary.json - parse-spec.js:295');
 
-console.log('\n🎉 DONE! All files generated from airules.md - parse-spec.js:278');
-console.log(`\n📊 Summary: - parse-spec.js:279`);
-console.log(`${summary.stats.primitiveColors} primitive colors - parse-spec.js:280`);
-console.log(`${summary.stats.semanticTokens} semantic tokens - parse-spec.js:281`);
-console.log(`${summary.stats.themes.length} themes: ${summary.stats.themes.join(', ')} - parse-spec.js:282`);
-console.log(`${summary.stats.aiRules.token} token rules, ${summary.stats.aiRules.motion} motion rules - parse-spec.js:283`);
-console.log('\n🚀 Run `npm run sync` anytime you update airules.md - parse-spec.js:284');
+console.log('\n🎉 DONE! All files generated from airules.md - parse-spec.js:297');
+console.log(`\n📊 Summary: - parse-spec.js:298`);
+console.log(`${summary.stats.primitiveColors} primitive colors - parse-spec.js:299`);
+console.log(`${summary.stats.semanticTokens} semantic tokens - parse-spec.js:300`);
+console.log(`${summary.stats.themes.length} themes: ${summary.stats.themes.join(', ')} - parse-spec.js:301`);
+console.log(`${summary.stats.aiRules.token} token rules, ${summary.stats.aiRules.motion} motion rules - parse-spec.js:302`);
+console.log('\n🚀 Run `npm run sync` anytime you update airules.md - parse-spec.js:303');
