@@ -3,92 +3,126 @@ const CATALOG_URL = 'https://raw.githubusercontent.com/idaakiwumi/prism-design-s
 
 figma.showUI(__html__, { width: 400, height: 300 });
 
+// Helper to post log messages to the UI
+function logToUI(message) {
+  figma.ui.postMessage({ type: 'log', text: message });
+}
+
+// Load a font once
 let fontLoaded = false;
 async function ensureFont() {
   if (fontLoaded) return;
   try {
     await figma.loadFontAsync({ family: "Inter", style: "Regular" });
     fontLoaded = true;
-  } catch (err) {
-    await figma.loadFontAsync({ family: "Roboto", style: "Regular" });
-    fontLoaded = true;
+  } catch (e) {
+    try {
+      await figma.loadFontAsync({ family: "Roboto", style: "Regular" });
+      fontLoaded = true;
+    } catch (err) {
+      console.error("Could not load any font - code.js:23", err);
+      // Fallback to a generic sans‑serif (may not work, but we try)
+      await figma.loadFontAsync({ family: "Arial", style: "Regular" });
+      fontLoaded = true;
+    }
   }
 }
 
 async function fetchCatalog() {
   const response = await fetch(CATALOG_URL);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  return await response.json();
+  const data = await response.json();
+  if (!Array.isArray(data)) throw new Error("Catalog is not an array");
+  return data;
 }
 
 async function createOrUpdateComponent(componentData, viewportCenter) {
   const { name, props, tokenMapping, accessibility } = componentData;
+  if (!name) throw new Error("Component missing 'name'");
 
-  let componentSet = figma.currentPage.findOne(node => node.type === 'COMPONENT_SET' && node.name === name);
+  // Find existing component set (case‑insensitive)
+  let componentSet = figma.currentPage.findOne(
+    node => node.type === 'COMPONENT_SET' && node.name.toLowerCase() === name.toLowerCase()
+  );
+  
   if (!componentSet) {
     componentSet = figma.createComponentSet();
     componentSet.name = name;
-    // Move to viewport center
+    // Place near viewport center
     componentSet.x = viewportCenter.x - 100;
     componentSet.y = viewportCenter.y - 50;
+    logToUI(`Created new component set: ${name}`);
+  } else {
+    logToUI(`Found existing component set: ${name}`);
   }
 
-  // For demo: create one variant (primary/default)
+  // Ensure we have at least one variant (delete all existing variants for simplicity)
+  const existingVariants = componentSet.children;
+  for (const variant of existingVariants) {
+    variant.remove();
+  }
+
+  // Create a single variant (primary/default)
   const variant = componentSet.createVariant();
-  variant.name = `variant=primary,state=default,size=medium`;
-  const frame = variant;
+  variant.name = `variant=primary, state=default, size=medium`;
+  
+  // Clear any default children (just in case)
+  while (variant.children.length) variant.children[0].remove();
 
-  // Clear existing children
-  while (frame.children.length) frame.children[0].remove();
-
-  // Background (placeholder – would use token later)
+  // Add background rectangle
   const bg = figma.createRectangle();
   bg.resize(120, 40);
-  bg.fills = [{ type: 'SOLID', color: { r: 0, g: 0.4, b: 0.8 } }];
+  bg.fills = [{ type: 'SOLID', color: { r: 0, g: 0.4, b: 0.8 } }]; // placeholder blue
   bg.name = "Background";
-  frame.appendChild(bg);
+  variant.appendChild(bg);
 
-  // Text label
+  // Add text label
   await ensureFont();
   const text = figma.createText();
-  await figma.loadFontAsync(text.fontName);
+  // Explicitly set font to the one we loaded
+  await figma.loadFontAsync({ family: "Inter", style: "Regular" });
+  text.fontName = { family: "Inter", style: "Regular" };
   text.characters = "Button";
   text.x = 10;
   text.y = 10;
   text.name = "Label";
-  frame.appendChild(text);
+  variant.appendChild(text);
 
-  // Add metadata as description
+  // Add documentation as component description (visible in Dev Mode)
   const descriptionParts = [];
-  if (props.length) descriptionParts.push(`Props: ${JSON.stringify(props)}`);
-  if (Object.keys(tokenMapping).length) descriptionParts.push(`Tokens: ${JSON.stringify(tokenMapping)}`);
+  if (props && props.length) descriptionParts.push(`Props: ${JSON.stringify(props, null, 2)}`);
+  if (tokenMapping && Object.keys(tokenMapping).length) descriptionParts.push(`Tokens: ${JSON.stringify(tokenMapping, null, 2)}`);
   if (accessibility) descriptionParts.push(`Accessibility: ${accessibility}`);
-  frame.description = descriptionParts.join('\n\n');
+  variant.description = descriptionParts.join('\n\n');
 }
 
 figma.ui.onmessage = async (msg) => {
   if (msg.type === 'sync-components') {
     try {
-      figma.ui.postMessage({ type: 'log', text: 'Fetching catalog...' });
+      logToUI('Fetching catalog...');
       const catalog = await fetchCatalog();
+      
       if (!catalog.length) {
-        figma.ui.postMessage({ type: 'log', text: '⚠️ No components found in catalog. Add a component definition to ai-rules.md (see docs).' });
+        logToUI('⚠️ No components found in catalog. Add a component definition to ai-rules.md (see docs).');
         figma.closePlugin();
         return;
       }
-      figma.ui.postMessage({ type: 'log', text: `Found ${catalog.length} components.` });
-
-      // Get current viewport center
-      const { x, y } = figma.viewport.center;
+      
+      logToUI(`Found ${catalog.length} component(s).`);
+      
+      // Get viewport center
+      const center = figma.viewport.center;
+      logToUI(`Viewport center: (${center.x}, ${center.y})`);
+      
       for (const comp of catalog) {
-        await createOrUpdateComponent(comp, { x, y });
-        figma.ui.postMessage({ type: 'log', text: `✅ Created/updated: ${comp.name}` });
+        await createOrUpdateComponent(comp, center);
+        logToUI(`✅ Processed: ${comp.name || 'unnamed'}`);
       }
-
-      figma.ui.postMessage({ type: 'log', text: 'Sync complete! Components placed at viewport center.' });
+      
+      logToUI('Sync complete! Components placed near viewport center.');
       figma.closePlugin();
     } catch (err) {
-      figma.ui.postMessage({ type: 'log', text: `Error: ${err.message}` });
+      logToUI(`❌ Error: ${err.message}`);
       console.error(err);
     }
   }
