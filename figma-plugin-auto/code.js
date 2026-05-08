@@ -1,69 +1,71 @@
-// PRISM Figma Plugin – Auto‑create components from component-catalog.json
+// PRISM Figma Plugin – Safe component creator
 const CATALOG_URL = 'https://raw.githubusercontent.com/idaakiwumi/prism-design-system/main/generated/component-catalog.json';
 
 figma.showUI(__html__, { width: 400, height: 300 });
 
-function logToUI(message) {
+function log(message) {
   figma.ui.postMessage({ type: 'log', text: message });
 }
 
+// Load a known font once
 let fontLoaded = false;
-async function ensureFont() {
+async function loadFont() {
   if (fontLoaded) return;
   try {
     await figma.loadFontAsync({ family: "Inter", style: "Regular" });
     fontLoaded = true;
+    log("✅ Font loaded: Inter");
   } catch (e) {
     try {
-      await figma.loadFontAsync({ family: "Roboto", style: "Regular" });
-      fontLoaded = true;
-    } catch (err) {
-      console.error("Could not load any font - code.js:21", err);
       await figma.loadFontAsync({ family: "Arial", style: "Regular" });
       fontLoaded = true;
+      log("✅ Fallback font loaded: Arial");
+    } catch (err) {
+      log("❌ Could not load any font. Components will be blank.");
     }
   }
 }
 
 async function fetchCatalog() {
-  const response = await fetch(CATALOG_URL);
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  const data = await response.json();
+  const resp = await fetch(CATALOG_URL);
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  const data = await resp.json();
   if (!Array.isArray(data)) throw new Error("Catalog is not an array");
   return data;
 }
 
-async function createOrUpdateComponent(componentData, viewportCenter) {
-  const { name, props, tokenMapping, accessibility } = componentData;
-  if (!name) throw new Error("Component missing 'name'");
+async function createComponent(comp, center) {
+  const name = comp.name; // e.g., "button_component"
+  if (!name) throw new Error("Component has no name");
 
-  // 1. Delete any existing node with the same name (component, component set, or frame)
-  const existing = figma.currentPage.findOne(node => node.name === name);
+  // 1. Remove any existing node with the same name (to avoid conflicts)
+  const existing = figma.currentPage.findOne(n => n.name === name);
   if (existing) {
     existing.remove();
-    logToUI(`Removed existing node: ${name}`);
+    log(`Removed old node: ${name}`);
   }
 
-  // 2. Create a brand new component set
+  // 2. Create a new component set
   const componentSet = figma.createComponentSet();
   componentSet.name = name;
-  componentSet.x = viewportCenter.x - 100;
-  componentSet.y = viewportCenter.y - 50;
+  componentSet.x = center.x - 100;
+  componentSet.y = center.y - 50;
 
   // 3. Create one variant (primary/default)
   const variant = componentSet.createVariant();
   variant.name = "variant=primary, state=default, size=medium";
 
-  // 4. Add background rectangle
+  // 4. Background rectangle (placeholder blue)
   const bg = figma.createRectangle();
   bg.resize(120, 40);
-  bg.fills = [{ type: 'SOLID', color: { r: 0, g: 0.4, b: 0.8 } }]; // placeholder blue
+  bg.fills = [{ type: 'SOLID', color: { r: 0, g: 0.4, b: 0.8 } }];
   bg.name = "Background";
   variant.appendChild(bg);
 
-  // 5. Add text label
-  await ensureFont();
+  // 5. Text label
+  await loadFont();
   const text = figma.createText();
+  // Explicitly set font to the loaded one
   await figma.loadFontAsync({ family: "Inter", style: "Regular" });
   text.fontName = { family: "Inter", style: "Regular" };
   text.characters = "Button";
@@ -72,40 +74,40 @@ async function createOrUpdateComponent(componentData, viewportCenter) {
   text.name = "Label";
   variant.appendChild(text);
 
-  // 6. Add documentation as component description
-  const descriptionParts = [];
-  if (props && props.length) descriptionParts.push(`Props: ${JSON.stringify(props, null, 2)}`);
-  if (tokenMapping && Object.keys(tokenMapping).length) descriptionParts.push(`Tokens: ${JSON.stringify(tokenMapping, null, 2)}`);
-  if (accessibility) descriptionParts.push(`Accessibility: ${accessibility}`);
-  variant.description = descriptionParts.join('\n\n');
+  // 6. Add metadata as component description
+  const { props, tokenMapping, accessibility } = comp;
+  const desc = [];
+  if (props?.length) desc.push(`Props: ${JSON.stringify(props, null, 2)}`);
+  if (tokenMapping && Object.keys(tokenMapping).length) desc.push(`Tokens: ${JSON.stringify(tokenMapping, null, 2)}`);
+  if (accessibility) desc.push(`Accessibility: ${accessibility}`);
+  variant.description = desc.join('\n\n');
 
-  logToUI(`✅ Created component: ${name}`);
+  log(`✅ Created component: ${name}`);
 }
 
 figma.ui.onmessage = async (msg) => {
   if (msg.type === 'sync-components') {
     try {
-      logToUI('Fetching catalog...');
+      log("Fetching component catalog...");
       const catalog = await fetchCatalog();
-
       if (!catalog.length) {
-        logToUI('⚠️ No components found in catalog. Add a component definition to ai-rules.md (see docs).');
+        log("⚠️ No components found. Add a component definition to ai-rules.md (see docs).");
         figma.closePlugin();
         return;
       }
+      log(`Found ${catalog.length} component(s).`);
 
-      logToUI(`Found ${catalog.length} component(s).`);
       const center = figma.viewport.center;
-      logToUI(`Viewport center: (${center.x}, ${center.y})`);
+      log(`Viewport center: (${center.x}, ${center.y})`);
 
       for (const comp of catalog) {
-        await createOrUpdateComponent(comp, center);
+        await createComponent(comp, center);
       }
 
-      logToUI('Sync complete! Components placed near viewport center.');
+      log("Sync complete! Components placed near viewport center.");
       figma.closePlugin();
     } catch (err) {
-      logToUI(`❌ Error: ${err.message}`);
+      log(`❌ Error: ${err.message}`);
       console.error(err);
     }
   }
