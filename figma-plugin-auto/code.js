@@ -1,4 +1,4 @@
-// PRISM Figma Plugin – Safe component creator (no optional chaining)
+// PRISM Figma Plugin – Creates components (no component sets, works reliably)
 const CATALOG_URL = 'https://raw.githubusercontent.com/idaakiwumi/prism-design-system/main/generated/component-catalog.json';
 
 figma.showUI(__html__, { width: 400, height: 300 });
@@ -39,27 +39,22 @@ async function createComponent(comp, center) {
 
   // Remove any existing node with the same name
   const existing = figma.currentPage.findOne(n => n.name === name);
-  if (existing) {
-    existing.remove();
-    log(`Removed old node: ${name}`);
-  }
+  if (existing) existing.remove();
 
-  // Create a new component set
-  const componentSet = figma.createComponentSet();
-  componentSet.name = name;
-  componentSet.x = center.x - 100;
-  componentSet.y = center.y - 50;
+  // Create a frame (will become the component)
+  const frame = figma.createFrame();
+  frame.name = name;
+  frame.resize(120, 40);
+  frame.x = center.x - 100;
+  frame.y = center.y - 50;
+  frame.fills = [{ type: 'SOLID', color: { r: 0.95, g: 0.95, b: 0.95 } }]; // light grey background for visibility
 
-  // Create one variant (primary/default)
-  const variant = componentSet.createVariant();
-  variant.name = "variant=primary, state=default, size=medium";
-
-  // Background rectangle (placeholder blue)
+  // Background rectangle (simulating button background)
   const bg = figma.createRectangle();
   bg.resize(120, 40);
-  bg.fills = [{ type: 'SOLID', color: { r: 0, g: 0.4, b: 0.8 } }];
+  bg.fills = [{ type: 'SOLID', color: { r: 0, g: 0.4, b: 0.8 } }]; // blue
   bg.name = "Background";
-  variant.appendChild(bg);
+  frame.appendChild(bg);
 
   // Text label
   await loadFont();
@@ -70,15 +65,19 @@ async function createComponent(comp, center) {
   text.x = 10;
   text.y = 10;
   text.name = "Label";
-  variant.appendChild(text);
+  frame.appendChild(text);
 
-  // Metadata as component description
+  // Convert the frame to a component
+  const component = figma.createComponentFromNode(frame);
+  component.name = name;
+
+  // Add metadata as component description (visible in Figma Dev Mode)
   const { props, tokenMapping, accessibility } = comp;
   const desc = [];
   if (props && props.length) desc.push(`Props: ${JSON.stringify(props, null, 2)}`);
   if (tokenMapping && Object.keys(tokenMapping).length) desc.push(`Tokens: ${JSON.stringify(tokenMapping, null, 2)}`);
   if (accessibility) desc.push(`Accessibility: ${accessibility}`);
-  variant.description = desc.join('\n\n');
+  component.description = desc.join('\n\n');
 
   log(`✅ Created component: ${name}`);
 }
