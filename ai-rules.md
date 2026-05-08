@@ -138,5 +138,16 @@ When generating any design system output:
 - Always include a `@media (prefers-reduced-motion: reduce)` wrapper around any transition or animation.
 - For agentic intent preview cards: structure = card container + confidence badge (matching colour token) + action buttons. Confidence label must be visible text, not just colour.
 
+## Nested cards (cards inside cards)
+- A card that appears as a direct child of another card MUST use `background: var(--color-surface-default)` instead of `var(--color-surface-raised)`.
+- Add a subtle border or box‑shadow to the inner card to ensure clear visual separation.
+- Example:
+  ```css
+  .card .card {
+    background: var(--color-surface-default);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+
 ---
 *End of PRISM rules – follow exactly.*
