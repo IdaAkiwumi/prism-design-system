@@ -7,7 +7,7 @@ PRISM is a **machine‑readable design infrastructure** that proves a single tok
 
 ---
 
-## What PRISM proves (against the TeamSense Sr. Product Designer, Design Systems JD)
+## What PRISM proves 
 
 | JD Requirement | How PRISM demonstrates it |
 |----------------|---------------------------|
@@ -84,7 +84,7 @@ This design system is not a static Figma file – it's infrastructure that feeds
 - Figma – Plugin API, local development
 - Hosting – GitHub Pages
 
-## Why this matters for TeamSense
+## Why this matter
 
 > "This is not a traditional design system librarian role. You are building machine‑readable design infrastructure that enables Product Builders, engineers, and AI tools to ship production‑quality UI faster than any of them could alone."
 
