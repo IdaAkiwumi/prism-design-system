@@ -1,17 +1,13 @@
 const fs = require('fs');
-const path = require('path');
 
-// Read your ai-rules.md file
 const markdown = fs.readFileSync('ai-rules.md', 'utf8');
-
-console.log('🔍 Parsing airules.md... - parse-spec.js:7');
+console.log('🔍 Parsing airules.md... - parse-spec.js:4');
 
 // ============================================
 // 1. EXTRACT PRIMITIVE TOKENS
 // ============================================
 function extractPrimitives(markdown) {
   const primitives = { color: {}, spacing: {}, motion: {} };
-  
   const colorRegex = /- (color-[a-z]+-[0-9]+): (#[A-F0-9]{6})/gi;
   let match;
   while ((match = colorRegex.exec(markdown)) !== null) {
@@ -21,24 +17,20 @@ function extractPrimitives(markdown) {
     if (!primitives.color[colorFamily]) primitives.color[colorFamily] = {};
     primitives.color[colorFamily][shade] = { $value: match[2], $type: 'color' };
   }
-  
   const spacingRegex = /- (spacing-[0-9]+): ([0-9]+)px/gi;
   while ((match = spacingRegex.exec(markdown)) !== null) {
     primitives.spacing[match[1]] = { $value: match[2], $type: 'dimension' };
   }
-  
   const durationRegex = /- (duration-[a-z]+): ([0-9]+)ms/gi;
   while ((match = durationRegex.exec(markdown)) !== null) {
     if (!primitives.motion.duration) primitives.motion.duration = {};
     primitives.motion.duration[match[1]] = { $value: match[2] + 'ms', $type: 'duration' };
   }
-  
   const easingRegex = /- (easing-[a-z]+): cubic-bezier\(([^)]+)\)/gi;
   while ((match = easingRegex.exec(markdown)) !== null) {
     if (!primitives.motion.easing) primitives.motion.easing = {};
     primitives.motion.easing[match[1]] = { $value: `cubic-bezier(${match[2]})`, $type: 'cubicBezier' };
   }
-  
   return primitives;
 }
 
@@ -47,42 +39,30 @@ function extractPrimitives(markdown) {
 // ============================================
 function extractSemantic(markdown) {
   const semantic = { color: {} };
-  
-  // Match lines like: - color-action-primary → color-blue-500 | description text
-  // The description is optional (after |)
   const semanticRegex = /- (color-[a-z]+-[a-z]+) → ([a-z0-9#-]+)(?:\s*\|\s*(.*))?/gi;
   let match;
   while ((match = semanticRegex.exec(markdown)) !== null) {
     const parts = match[1].split('-');
-    const category = parts[1]; // action, feedback, text, surface
-    const token = parts[2];     // primary, destructive, success, etc.
+    const category = parts[1];
+    const token = parts[2];
     const value = match[2];
     const description = match[3] ? match[3].trim() : "";
-    
     if (!semantic.color[category]) semantic.color[category] = {};
-    
-    const tokenObj = {
-      $value: value.startsWith('#') ? value : `{${value}}`,
-      $type: "color"
-    };
-    if (description) {
-      tokenObj.$description = description;
-    }
+    const tokenObj = { $value: value.startsWith('#') ? value : `{${value}}`, $type: "color" };
+    if (description) tokenObj.$description = description;
     semantic.color[category][token] = tokenObj;
   }
-  
   return semantic;
 }
 
 // ============================================
-// 3. EXTRACT THEMES (UPDATED LINE-BY-LINE)
+// 3. EXTRACT THEMES
 // ============================================
 function extractThemes(markdown) {
   const themes = {};
   const lines = markdown.split('\n');
   let currentTheme = null;
   let inTable = false;
-  
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     const themeMatch = line.match(/^## Theme:\s*([A-Za-z]+)/i);
@@ -94,7 +74,7 @@ function extractThemes(markdown) {
     }
     if (line.startsWith('| Token | Value |')) {
       inTable = true;
-      i++; // skip separator line
+      i++; // skip separator
       continue;
     }
     if (inTable && currentTheme && line.startsWith('|')) {
@@ -105,15 +85,13 @@ function extractThemes(markdown) {
         themes[currentTheme][tokenName] = tokenValue;
       }
     }
-    if (inTable && (line === '' || line.startsWith('##'))) {
-      inTable = false;
-    }
+    if (inTable && (line === '' || line.startsWith('##'))) inTable = false;
   }
   return themes;
 }
 
 // ============================================
-// 4. EXTRACT COMPONENT CONTRACTS
+// 4. EXTRACT OLD COMPONENT CONTRACTS (optional)
 // ============================================
 function extractComponents(markdown) {
   const components = {};
@@ -161,14 +139,14 @@ function extractAIRules(markdown) {
 // 6. GENERATE CSS VARIABLES
 // ============================================
 function generateCSSVariables(themes) {
-  let css = `/* PRISM Design System - Generated from ai-rules.md */\n\n`;
-  css += `/* BASE THEME (default) */\n:root {\n`;
+  let css = '/* PRISM Design System - Generated from ai-rules.md */\n\n';
+  css += '/* BASE THEME (default) */\n:root {\n';
   if (themes.base) {
     Object.entries(themes.base).forEach(([varName, value]) => {
       css += `  --${varName}: ${value};\n`;
     });
   }
-  css += `}\n\n`;
+  css += '}\n\n';
   Object.entries(themes).forEach(([themeName, vars]) => {
     if (themeName === 'base') return;
     css += `/* ${themeName.toUpperCase()} THEME */\n`;
@@ -176,58 +154,106 @@ function generateCSSVariables(themes) {
     Object.entries(vars).forEach(([varName, value]) => {
       css += `  --${varName}: ${value};\n`;
     });
-    css += `}\n\n`;
+    css += '}\n\n';
   });
   return css;
 }
 
 // ============================================
-// RUN EVERYTHING
+// 7. NEW: EXTRACT COMPONENT CATALOG FOR FIGMA
 // ============================================
-console.log('📝 Extracting primitives... - parse-spec.js:187');
+function extractComponentsCatalog(markdown) {
+  const components = [];
+  const componentSections = markdown.split(/\n### ([A-Za-z]+)\n/);
+  for (let i = 1; i < componentSections.length; i += 2) {
+    const name = componentSections[i].toLowerCase();
+    const content = componentSections[i+1];
+    const component = { name, props: [], tokenMapping: {}, accessibility: '', description: '' };
+    const tableRegex = /\|\s*([a-z]+)\s*\|\s*(enum|boolean|string)\s*\|\s*([^\|]+)\s*\|\s*([^\|]+)\s*\|\s*([^\|]+)\s*\|/gi;
+    let match;
+    while ((match = tableRegex.exec(content)) !== null) {
+      component.props.push({
+        name: match[1],
+        type: match[2],
+        options: match[3].trim().split(/,\s*/),
+        default: match[4].trim(),
+        description: match[5].trim()
+      });
+    }
+    const tokenMatch = content.match(/\*\*Token mapping:\*\*([\s\S]*?)(?=\n\*\*|$)/);
+    if (tokenMatch) {
+      const lines = tokenMatch[1].split('\n');
+      lines.forEach(line => {
+        const colonIdx = line.indexOf(':');
+        if (colonIdx > 0) {
+          const key = line.slice(0, colonIdx).trim();
+          const value = line.slice(colonIdx+1).trim();
+          component.tokenMapping[key] = value;
+        }
+      });
+    }
+    const a11yMatch = content.match(/\*\*Accessibility:\*\*([\s\S]*?)(?=\n\*\*|$)/);
+    if (a11yMatch) component.accessibility = a11yMatch[1].trim();
+    components.push(component);
+  }
+  return components;
+}
+
+// ============================================
+// RUN ALL EXTRACTIONS
+// ============================================
+console.log('📝 Extracting primitives... - parse-spec.js:205');
 const primitives = extractPrimitives(markdown);
-console.log('📝 Extracting semantic tokens... - parse-spec.js:189');
+console.log('📝 Extracting semantic tokens... - parse-spec.js:207');
 const semantic = extractSemantic(markdown);
-console.log('📝 Extracting themes... - parse-spec.js:191');
+console.log('📝 Extracting themes... - parse-spec.js:209');
 const themes = extractThemes(markdown);
-console.log('📝 Extracting component contracts... - parse-spec.js:193');
-const components = extractComponents(markdown);
-console.log('📝 Extracting AI rules... - parse-spec.js:195');
+console.log('📝 Extracting component contracts (legacy)... - parse-spec.js:211');
+const componentsLegacy = extractComponents(markdown);
+console.log('📝 Extracting AI rules... - parse-spec.js:213');
 const aiRules = extractAIRules(markdown);
-console.log('📝 Generating CSS variables... - parse-spec.js:197');
+console.log('📝 Extracting component catalog for Figma... - parse-spec.js:215');
+const componentCatalog = extractComponentsCatalog(markdown);
+console.log('📝 Generating CSS variables... - parse-spec.js:217');
 const cssVariables = generateCSSVariables(themes);
 
-// Create directories: tokens/ and generated/
+// ============================================
+// ENSURE DIRECTORIES EXIST
+// ============================================
 const dirs = ['tokens', 'tokens/themes', 'generated'];
 dirs.forEach(dir => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 });
 
+// ============================================
+// WRITE ALL GENERATED FILES
+// ============================================
 fs.writeFileSync('tokens/primitives.json', JSON.stringify(primitives, null, 2));
-console.log('✅ Written: tokens/primitives.json - parse-spec.js:209');
+console.log('✅ Written: tokens/primitives.json - parse-spec.js:232');
 
 fs.writeFileSync('tokens/semantic.json', JSON.stringify(semantic, null, 2));
-console.log('✅ Written: tokens/semantic.json - parse-spec.js:212');
+console.log('✅ Written: tokens/semantic.json - parse-spec.js:235');
 
 Object.entries(themes).forEach(([themeName, themeValues]) => {
   fs.writeFileSync(`tokens/themes/${themeName}.json`, JSON.stringify(themeValues, null, 2));
-  console.log(`✅ Written: tokens/themes/${themeName}.json - parse-spec.js:216`);
+  console.log(`✅ Written: tokens/themes/${themeName}.json - parse-spec.js:239`);
 });
 
-if (Object.keys(components).length > 0) {
-  fs.writeFileSync('generated/components.json', JSON.stringify(components, null, 2));
-  console.log('✅ Written: generated/components.json - parse-spec.js:221');
+if (Object.keys(componentsLegacy).length > 0) {
+  fs.writeFileSync('generated/components-legacy.json', JSON.stringify(componentsLegacy, null, 2));
+  console.log('✅ Written: generated/componentslegacy.json - parse-spec.js:244');
 } else {
-  console.log('ℹ️ No component contracts found  skipping components.json - parse-spec.js:223');
+  console.log('ℹ️ No legacy component contracts found  skipping - parse-spec.js:246');
 }
 
 fs.writeFileSync('generated/ai-rules.json', JSON.stringify(aiRules, null, 2));
-console.log('✅ Written: generated/airules.json - parse-spec.js:227');
+console.log('✅ Written: generated/airules.json - parse-spec.js:250');
 
 fs.writeFileSync('generated/prism-variables.css', cssVariables);
-console.log('✅ Written: generated/prismvariables.css - parse-spec.js:230');
+console.log('✅ Written: generated/prismvariables.css - parse-spec.js:253');
+
+fs.writeFileSync('generated/component-catalog.json', JSON.stringify(componentCatalog, null, 2));
+console.log('✅ Written: generated/componentcatalog.json - parse-spec.js:256');
 
 const summary = {
   generatedAt: new Date().toISOString(),
@@ -246,14 +272,13 @@ const summary = {
     }
   }
 };
-
 fs.writeFileSync('generated/spec-summary.json', JSON.stringify(summary, null, 2));
-console.log('✅ Written: generated/specsummary.json - parse-spec.js:251');
+console.log('✅ Written: generated/specsummary.json - parse-spec.js:276');
 
-console.log('\n🎉 DONE! All files generated from airules.md - parse-spec.js:253');
-console.log(`\n📊 Summary: - parse-spec.js:254`);
-console.log(`${summary.stats.primitiveColors} primitive colors - parse-spec.js:255`);
-console.log(`${summary.stats.semanticTokens} semantic tokens - parse-spec.js:256`);
-console.log(`${summary.stats.themes.length} themes: ${summary.stats.themes.join(', ')} - parse-spec.js:257`);
-console.log(`${summary.stats.aiRules.token} token rules, ${summary.stats.aiRules.motion} motion rules - parse-spec.js:258`);
-console.log('\n🚀 Run `npm run sync` anytime you update airules.md - parse-spec.js:259');
+console.log('\n🎉 DONE! All files generated from airules.md - parse-spec.js:278');
+console.log(`\n📊 Summary: - parse-spec.js:279`);
+console.log(`${summary.stats.primitiveColors} primitive colors - parse-spec.js:280`);
+console.log(`${summary.stats.semanticTokens} semantic tokens - parse-spec.js:281`);
+console.log(`${summary.stats.themes.length} themes: ${summary.stats.themes.join(', ')} - parse-spec.js:282`);
+console.log(`${summary.stats.aiRules.token} token rules, ${summary.stats.aiRules.motion} motion rules - parse-spec.js:283`);
+console.log('\n🚀 Run `npm run sync` anytime you update airules.md - parse-spec.js:284');

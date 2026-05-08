@@ -84,9 +84,9 @@ Load into Cursor, Copilot, or any MCP-compatible AI agent.
 | --color-action-primary | #E50914 |
 | --color-surface-default | #0A0A0A |
 | --color-text-primary | #FFFFFF |
-| --color-surface-raised | #2C2C2C |   <!-- was #1A1A1A, now lighter -->
+| --color-surface-raised | #2C2C2C |
 | --border-radius-default | 0px |
-| --card-border | 1px solid rgba(255,255,255,0.08) |   <!-- new token -->
+| --card-border | 1px solid rgba(255,255,255,0.08) |
 
 ## Theme: EDUCATION
 | Token | Value |
@@ -144,12 +144,13 @@ When generating any design system output:
 - A card that appears as a direct child of another card MUST use `background: var(--color-surface-default)` instead of `var(--color-surface-raised)`.
 - Add a subtle border or box‑shadow to the inner card to ensure clear visual separation.
 - Example:
-  ```css
-  .card .card {
-    background: var(--color-surface-default);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    border: 1px solid rgba(0,0,0,0.1);
-  }
+```css
+.card .card {
+  background: var(--color-surface-default);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.1);
+}
+```
 
 ---
 *End of PRISM rules – follow exactly.*

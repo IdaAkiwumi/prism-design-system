@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: sans-serif; padding: 16px; }
+    button { background: #0066CC; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; }
+    pre { background: #f0f0f0; padding: 8px; border-radius: 4px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h3>PRISM Component Sync</h3>
+  <button id="syncBtn">Sync Components from GitHub</button>
+  <div id="log"></div>
+  <script>
+    document.getElementById('syncBtn').onclick = () => {
+      parent.postMessage({ pluginMessage: { type: 'sync-components' } }, '*');
+    };
+    window.onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+      if (msg.type === 'log') {
+        const logDiv = document.getElementById('log');
+        logDiv.innerHTML += `<pre>${msg.text}</pre>`;
+      }
+    };
+  </script>
+</body>
+</html>
