@@ -1,3 +1,26 @@
 {
-  "button": {}
+  "button": {
+    "props": {
+      "variant": {
+        "type": "enum",
+        "options": "primary, secondary, ghost",
+        "default": "primary"
+      },
+      "size": {
+        "type": "enum",
+        "options": "small, medium, large",
+        "default": "medium"
+      },
+      "state": {
+        "type": "enum",
+        "options": "default, hover, active, disabled, loading",
+        "default": "default"
+      },
+      "label": {
+        "type": "string",
+        "options": "any text",
+        "default": "\"Button\""
+      }
+    }
+  }
 }
