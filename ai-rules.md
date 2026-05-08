@@ -133,6 +133,24 @@ When generating any design system output:
 }
 ```
 
+### Button Component
+
+| Prop | Type | Options | Default | Description |
+|------|------|---------|---------|-------------|
+| variant | enum | primary, secondary, ghost | primary | Visual style. Primary = filled action color, secondary = outline, ghost = text only. |
+| size | enum | small, medium, large | medium | Padding and font size. |
+| state | enum | default, hover, active, disabled, loading | default | Interactive state. |
+| label | string | any text | "Button" | Text inside button. |
+
+**Token mapping:**
+- Background: `var(--color-action-primary)` (primary variant)
+- Text: `var(--color-text-inverse)` (white) except Education theme overrides to `#111111`
+- Border radius: `var(--border-radius-default)`
+
+**Accessibility:**
+- Must have `aria-label` when label is not descriptive.
+- Disabled state must keep focus using `aria-disabled`.
+
 ## Additional Guidelines for AI Code Generation
 - When generating a card component, apply `background: var(--color-surface-raised)` and `border-radius: var(--border-radius-default)`.
 - For modals, use `--color-surface-raised` for background and `--color-action-primary` for confirm button.
