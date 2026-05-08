@@ -7,20 +7,6 @@ PRISM is a **machine‑readable design infrastructure** that proves a single tok
 
 ---
 
-## What PRISM proves 
-
-| JD Requirement | How PRISM demonstrates it |
-|----------------|---------------------------|
-| Token architecture (primitives → semantic → overrides) | `tokens/primitives.json`, `semantic.json`, `themes/*.json` with W3C DTCG format |
-| Intent descriptions (`$description`) | Every semantic token explains **what**, **why**, and **when** to use it |
-| Multi‑theme / multi‑brand | Base, Entertainment, Education themes side‑by‑side – same components, different variables |
-| AI agent rules (MCP skills) | `ai-rules.md` with token, motion, theme, accessibility, and agentic‑UI rules |
-| Design system as infrastructure, not just Figma | Live browser playground + generated CSS variables + Figma plugin POC |
-| Agentic UI patterns | Intent preview, confidence badges (high/medium/low), escalation flows (documented in rules) |
-| Design‑to‑code pipeline | `npm run sync` parses `ai-rules.md` → generates JSON tokens + CSS variables automatically |
-
----
-
 ## Architecture
 
 | Layer | File | Purpose |
