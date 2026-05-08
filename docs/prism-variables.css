@@ -1,0 +1,15 @@
+/* PRISM Design System - Generated from ai-rules.md */
+
+/* BASE THEME (default) */
+:root {
+}
+
+/* ENTERTAINMENT THEME */
+[data-theme="entertainment"] {
+}
+
+/* EDUCATION THEME */
+[data-theme="education"] {
+  --token-name: value;
+}
+

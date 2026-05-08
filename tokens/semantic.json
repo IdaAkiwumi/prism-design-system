@@ -2,65 +2,46 @@
   "color": {
     "action": {
       "primary": {
-        "$value": "{color.blue.500}",
-        "$type": "color",
-        "$description": "Primary CTAs and interactive elements. Most important action on screen. Never use decoratively."
-      },
-      "primary-hover": {
-        "$value": "{color.blue.700}",
-        "$type": "color",
-        "$description": "Hover state for primary actions only. Applied via :hover, never directly."
+        "$value": "{color-blue-500}",
+        "$type": "color"
       },
       "destructive": {
-        "$value": "{color.red.500}",
-        "$type": "color",
-        "$description": "Destructive or irreversible actions. Always pair with a confirmation dialog."
+        "$value": "{color-red-500}",
+        "$type": "color"
       }
     },
     "feedback": {
-      "success": {
-        "$value": "#00AA44",
-        "$type": "color",
-        "$description": "Positive confirmations, completed states. Never decorative."
-      },
       "warning": {
-        "$value": "{color.amber.500}",
-        "$type": "color",
-        "$description": "Cautionary states needing attention. Not errors."
+        "$value": "{color-amber-500}",
+        "$type": "color"
       },
       "danger": {
-        "$value": "{color.red.500}",
-        "$type": "color",
-        "$description": "Errors and critical alerts. Always pair with a non-color indicator for accessibility."
+        "$value": "{color-red-500}",
+        "$type": "color"
+      },
+      "success": {
+        "$value": "#00AA44",
+        "$type": "color"
       }
     },
     "text": {
       "primary": {
-        "$value": "{color.gray.900}",
-        "$type": "color",
-        "$description": "Main body copy on light surfaces."
+        "$value": "{color-gray-900}",
+        "$type": "color"
       },
       "inverse": {
-        "$value": "{color.white}",
-        "$type": "color",
-        "$description": "Text on dark or colored backgrounds only."
-      },
-      "disabled": {
-        "$value": "{color.gray.500}",
-        "$type": "color",
-        "$description": "Disabled UI text. Never for active content."
+        "$value": "{color-white}",
+        "$type": "color"
       }
     },
     "surface": {
       "default": {
-        "$value": "{color.white}",
-        "$type": "color",
-        "$description": "Primary page background."
+        "$value": "{color-white}",
+        "$type": "color"
       },
       "raised": {
-        "$value": "{color.gray.100}",
-        "$type": "color",
-        "$description": "Cards and floating elements above the default surface."
+        "$value": "#F5F5F5",
+        "$type": "color"
       }
     }
   }

@@ -1,0 +1,26 @@
+{
+  "token": [
+    "- NEVER hardcode hex values. Always use: var(--color-action-primary)",
+    "- ALWAYS use semantic tokens, not primitives",
+    "- Read each token $description before applying it to confirm intent"
+  ],
+  "motion": [
+    "- ALL animated components MUST include:",
+    "- Use motion-duration-fast (200ms) for buttons and toggles",
+    "- Use motion-duration-moderate (300ms) for modals and drawers"
+  ],
+  "theme": [
+    "- Apply themes via data-theme on the root element",
+    "- NEVER duplicate or fork components for different themes",
+    "- Only override semantic tokens in theme files — never primitives"
+  ],
+  "accessibility": [
+    "- Text on any background: minimum 4.5:1 contrast ratio (WCAG AA)",
+    "- Focus states: always visible — never just outline: none"
+  ],
+  "agentic": [
+    "- Intent preview: use card + badge components together",
+    "- Confidence badge colors:",
+    "- Escalation flows MUST show a visible human handoff option"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "prism-design-system",
+  "version": "1.0.0",
+  "description": "PRISM Design System - Token architecture for multi-industry UI",
+  "main": "parse-spec.js",
+  "scripts": {
+    "sync": "node parse-spec.js",
+    "build": "npm run sync"
+  },
+  "keywords": ["design-system", "design-tokens", "figma", "ai-rules"],
+  "author": "Your Name",
+  "license": "MIT"
+}

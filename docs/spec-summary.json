@@ -1,0 +1,21 @@
+{
+  "generatedAt": "2026-05-08T00:18:36.125Z",
+  "sourceFile": "ai-rules.md",
+  "stats": {
+    "primitiveColors": 4,
+    "primitiveSpacing": 0,
+    "semanticTokens": 9,
+    "themes": [
+      "base",
+      "entertainment",
+      "education"
+    ],
+    "aiRules": {
+      "token": 3,
+      "motion": 3,
+      "theme": 3,
+      "accessibility": 2,
+      "agentic": 3
+    }
+  }
+}
