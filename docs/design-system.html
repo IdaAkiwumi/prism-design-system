@@ -5,43 +5,27 @@
   <title>PRISM Design System – Demo</title>
   <style>
     /* =========================
-       PRISM TOKENS (SEMANTIC)
+       PRISM THEME VARIABLES
        ========================= */
-
     :root {
-      /* Core theme tokens (will be updated by JS) */
-      --color-action-primary: #0066CC;
-      --color-surface-default: #FFFFFF;
-      --color-text-primary: #111111;
-      --color-surface-raised: #F5F5F5;
-      --color-text-inverse: #FFFFFF;
+      /* Base theme defaults (semantic tokens) */
+      --color-action-primary: #0066CC;      /* Primary CTAs */
+      --color-surface-default: #FFFFFF;     /* App background */
+      --color-text-primary: #111111;        /* Main text */
+      --color-surface-raised: #F5F5F5;      /* Cards, modals */
+      --color-text-inverse: #FFFFFF;        /* Text on dark/colored */
+
+      --color-feedback-success: #00AA44;    /* Success feedback */
+      --color-feedback-warning: #F4A300;    /* Warning feedback */
+      --color-feedback-danger: #E50914;     /* Error feedback */
 
       --border-radius-default: 6px;
-
-      /* Feedback tokens (semantic intent) */
-      --color-feedback-success: #00AA44;
-      --color-feedback-warning: #F4A300;
-      --color-feedback-danger: #E50914;
-
-      /* Misc layout */
-      --page-max-width: 1120px;
-      --spacing-xs: 4px;
-      --spacing-sm: 8px;
-      --spacing-md: 12px;
-      --spacing-lg: 16px;
-      --spacing-xl: 24px;
-
-      --shadow-card: 0 2px 6px rgba(0,0,0,0.08);
-      --shadow-elevated: 0 8px 24px rgba(0,0,0,0.16);
-
-      --transition-fast: 200ms ease-out;
-      --transition-moderate: 300ms ease-out;
+      --card-border: none;
     }
 
     /* =========================
-       GLOBAL BASE STYLES
+       GLOBAL STYLES
        ========================= */
-
     * {
       box-sizing: border-box;
     }
@@ -51,83 +35,42 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--color-surface-default);
       color: var(--color-text-primary);
-      line-height: 1.5;
     }
 
-    main {
-      max-width: var(--page-max-width);
+    .app-shell {
+      max-width: 1120px;
       margin: 0 auto;
-      padding: var(--spacing-xl);
+      padding: 24px 16px 48px;
     }
 
-    h1, h2, h3, h4 {
-      margin: 0 0 var(--spacing-md);
-      color: var(--color-text-primary);
-    }
-
-    p {
-      margin: 0 0 var(--spacing-md);
-    }
-
-    code {
-      font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 13px;
-    }
-
-    pre {
-      margin: 0;
-      padding: var(--spacing-md);
-      background: var(--color-surface-raised);
-      border-radius: var(--border-radius-default);
-      overflow-x: auto;
-    }
-
-    a {
-      color: var(--color-action-primary);
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    /* Focus states – always visible, never outline: none */
-    :focus-visible {
-      outline: 2px solid var(--color-action-primary);
-      outline-offset: 2px;
-    }
-
-    /* =========================
-       LAYOUT: HEADER + TABS
-       ========================= */
-
-    .ds-header {
+    header.app-header {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
       align-items: center;
-      gap: var(--spacing-md);
-      margin-bottom: var(--spacing-xl);
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
     }
 
-    .ds-header-title {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-xs);
+    .title-block h1 {
+      margin: 0;
+      font-size: 1.6rem;
     }
 
-    .ds-header-title small {
+    .title-block p {
+      margin: 4px 0 0;
+      font-size: 0.9rem;
       opacity: 0.8;
     }
 
     .theme-switcher {
       display: flex;
       align-items: center;
-      gap: var(--spacing-sm);
+      gap: 8px;
     }
 
     .theme-switcher label {
-      font-size: 14px;
+      font-size: 0.9rem;
     }
 
     .theme-switcher select {
@@ -138,173 +81,200 @@
       color: var(--color-text-primary);
     }
 
+    /* Focus states – visible, using action primary */
+    :focus-visible {
+      outline: 2px solid var(--color-action-primary);
+      outline-offset: 2px;
+    }
+
+    /* =========================
+       TABS
+       ========================= */
     .tabs {
-      display: flex;
       border-bottom: 1px solid rgba(0,0,0,0.1);
-      margin-bottom: var(--spacing-lg);
-      gap: 2px;
-      overflow-x: auto;
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
     }
 
     .tab-button {
-      padding: 10px 16px;
       border: none;
       background: transparent;
+      padding: 8px 14px;
       cursor: pointer;
-      font-size: 14px;
+      border-radius: 999px;
+      font-size: 0.9rem;
       color: var(--color-text-primary);
-      border-bottom: 2px solid transparent;
-      transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
     }
 
     .tab-button[aria-selected="true"] {
-      border-bottom-color: var(--color-action-primary);
-      font-weight: 600;
-    }
-
-    .tab-button:hover {
-      background: var(--color-surface-raised);
+      background: var(--color-action-primary);
+      color: var(--color-text-inverse);
     }
 
     .tab-panel {
       display: none;
+      padding-top: 8px;
     }
 
     .tab-panel[aria-hidden="false"] {
       display: block;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-      gap: var(--spacing-xl);
-      align-items: flex-start;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: var(--spacing-lg);
-    }
-
     /* =========================
-       CARD COMPONENT
+       CARDS
        ========================= */
-
     .card {
-      background: var(--color-surface-raised);
+      background: var(--color-surface-raised); /* semantic raised surface */
       border-radius: var(--border-radius-default);
-      padding: var(--spacing-lg);
-      box-shadow: var(--shadow-card);
-      border: 1px solid rgba(0,0,0,0.06);
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border: var(--card-border);
     }
 
-    .card-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .card-subtitle {
-      font-size: 13px;
-      opacity: 0.8;
-      margin-bottom: var(--spacing-md);
-    }
-
-    .card-section-title {
-      font-size: 13px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-bottom: var(--spacing-sm);
-      opacity: 0.8;
-    }
-
-    .card + .card {
-      margin-top: var(--spacing-md);
-    }
-
-    /* Nested cards: direct child card uses surface-default */
+    /* Nested cards: use default surface + subtle separation */
     .card .card {
       background: var(--color-surface-default);
-      box-shadow: var(--shadow-card);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
       border: 1px solid rgba(0,0,0,0.1);
     }
 
-    /* =========================
-       BUTTON COMPONENT
-       ========================= */
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
 
+    .card-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .card-meta {
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+
+    .card-body {
+      font-size: 0.9rem;
+    }
+
+    .layout-two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.3fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 800px) {
+      .layout-two-column {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    pre {
+      margin: 0;
+      padding: 12px;
+      background: var(--color-surface-default);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      overflow-x: auto;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    code {
+      font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    dl {
+      margin: 0;
+      display: grid;
+      grid-template-columns: max-content minmax(0, 1fr);
+      column-gap: 12px;
+      row-gap: 4px;
+      font-size: 0.85rem;
+    }
+
+    dt {
+      font-weight: 600;
+    }
+
+    dd {
+      margin: 0;
+      opacity: 0.85;
+    }
+
+    /* =========================
+       BUTTONS
+       ========================= */
     .btn-row {
       display: flex;
       flex-wrap: wrap;
-      gap: var(--spacing-sm);
+      gap: 8px;
       align-items: center;
     }
 
     .btn {
-      position: relative;
+      font-size: 0.9rem;
+      border-radius: 999px;
+      padding: 8px 16px;
+      border: 1px solid transparent;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
       background: transparent;
       color: var(--color-text-primary);
-      transition:
-        background-color var(--transition-fast),
-        color var(--transition-fast),
-        border-color var(--transition-fast),
-        transform var(--transition-fast),
-        box-shadow var(--transition-fast);
     }
 
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    /* Primary – uses semantic action + inverse text
-       (Education theme overrides text color explicitly) */
     .btn-primary {
-      background: var(--color-action-primary); /* semantic: primary CTA */
-      color: var(--color-text-inverse);
-      border-color: var(--color-action-primary);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      background: var(--color-action-primary);      /* semantic primary action */
+      color: var(--color-text-inverse);            /* text on colored background */
+      border-color: transparent;
     }
 
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.22);
-    }
-
-    /* Education theme override: primary text must be dark (#111111) */
+    /* Education theme override: primary button text must be dark */
     [data-theme="education"] .btn-primary {
       color: #111111;
     }
 
-    /* Secondary – outlined, uses text-primary */
     .btn-secondary {
+      background: var(--color-surface-default);
+      color: var(--color-action-primary);
+      border-color: var(--color-action-primary);
+    }
+
+    .btn-ghost {
       background: transparent;
-      color: var(--color-text-primary);
-      border-color: rgba(0,0,0,0.2);
+      color: var(--color-action-primary);
+      border-color: transparent;
+    }
+
+    /* Motion rules for buttons */
+    .btn {
+      transition:
+        background-color 200ms ease,
+        color 200ms ease,
+        border-color 200ms ease,
+        box-shadow 200ms ease;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn {
+        transition: none;
+      }
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 0 2px rgba(0,0,0,0.06);
     }
 
     .btn-secondary:hover {
       background: var(--color-surface-raised);
-    }
-
-    /* Ghost – minimal, no border, subtle hover */
-    .btn-ghost {
-      background: transparent;
-      color: var(--color-text-primary);
-      border-color: transparent;
     }
 
     .btn-ghost:hover {
@@ -312,231 +282,206 @@
     }
 
     /* =========================
-       INPUT COMPONENT
+       INPUTS
        ========================= */
-
     .field {
       display: flex;
       flex-direction: column;
       gap: 4px;
-      margin-bottom: var(--spacing-md);
+      font-size: 0.9rem;
     }
 
     .field label {
-      font-size: 13px;
       font-weight: 500;
     }
 
-    .input {
+    .field input {
       padding: 8px 10px;
       border-radius: 6px;
-      border: 1px solid rgba(0,0,0,0.18);
+      border: 1px solid rgba(0,0,0,0.2);
       background: var(--color-surface-default);
       color: var(--color-text-primary);
-      font-size: 14px;
-      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+      font-size: 0.9rem;
     }
 
-    .input:focus-visible {
-      border-color: var(--color-action-primary);
-      box-shadow: 0 0 0 1px var(--color-action-primary);
+    .field input:focus-visible {
+      outline: 2px solid var(--color-action-primary);
+      outline-offset: 2px;
+      border-color: transparent;
     }
 
-    .input-helper {
-      font-size: 12px;
-      opacity: 0.8;
+    .field-helper {
+      font-size: 0.8rem;
+      opacity: 0.75;
     }
 
-    .input-error {
+    .field-error {
+      font-size: 0.8rem;
       color: var(--color-feedback-danger);
-      font-size: 12px;
       display: flex;
       align-items: center;
       gap: 4px;
     }
 
     /* =========================
-       BADGE COMPONENT
+       BADGES
        ========================= */
-
     .badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       padding: 2px 8px;
       border-radius: 999px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
+      font-size: 0.75rem;
+      font-weight: 500;
       border: 1px solid transparent;
-      white-space: nowrap;
+      gap: 4px;
     }
 
     .badge-neutral {
-      background: var(--color-surface-raised);
+      background: var(--color-surface-default);
       color: var(--color-text-primary);
-      border-color: rgba(0,0,0,0.12);
+      border-color: rgba(0,0,0,0.1);
     }
 
-    /* Confidence badges – agentic patterns */
     .badge-success {
       background: var(--color-feedback-success);
       color: var(--color-text-inverse);
-      border-color: var(--color-feedback-success);
     }
 
     .badge-warning {
       background: var(--color-feedback-warning);
       color: var(--color-text-primary);
-      border-color: var(--color-feedback-warning);
     }
 
     .badge-danger {
       background: var(--color-feedback-danger);
       color: var(--color-text-inverse);
-      border-color: var(--color-feedback-danger);
+    }
+
+    /* =========================
+       TOKENS TABLE
+       ========================= */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+
+    th, td {
+      padding: 8px 6px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      text-align: left;
+    }
+
+    th {
+      font-weight: 600;
+      background: var(--color-surface-raised);
+    }
+
+    .swatch {
+      width: 32px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    /* =========================
+       THEMES TAB – HARD-CODED SWATCH BUTTONS
+       ========================= */
+    .theme-swatch-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .theme-swatch-btn {
+      border-radius: 8px;
+      padding: 10px 14px;
+      border: 1px solid rgba(0,0,0,0.15);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #FFFFFF;
+      font-size: 0.85rem;
+    }
+
+    .theme-swatch-btn .swatch {
+      flex-shrink: 0;
+    }
+
+    .swatch-base {
+      background: #0066CC;   /* hardcoded as required */
+    }
+
+    .swatch-entertainment {
+      background: #E50914;   /* hardcoded as required */
+    }
+
+    .swatch-education {
+      background: #F4A300;   /* hardcoded as required */
     }
 
     /* =========================
        AGENTIC INTENT PREVIEW
        ========================= */
-
     .intent-preview {
       display: flex;
       flex-direction: column;
-      gap: var(--spacing-md);
+      gap: 8px;
     }
 
     .intent-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: var(--spacing-sm);
+      gap: 8px;
     }
 
     .intent-title {
-      font-size: 14px;
       font-weight: 600;
-    }
-
-    .intent-meta {
-      font-size: 12px;
-      opacity: 0.8;
+      font-size: 0.95rem;
     }
 
     .intent-actions {
       display: flex;
+      gap: 8px;
       flex-wrap: wrap;
-      gap: var(--spacing-sm);
     }
 
-    .intent-note {
-      font-size: 12px;
-      opacity: 0.85;
+    .intent-meta {
+      font-size: 0.8rem;
+      opacity: 0.8;
     }
 
-    /* =========================
-       TOKENS TABLE
-       ========================= */
-
-    .token-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
+    .ai-rules-list {
+      font-size: 0.9rem;
+      padding-left: 18px;
     }
 
-    .token-table th,
-    .token-table td {
-      padding: 6px 8px;
-      border-bottom: 1px solid rgba(0,0,0,0.08);
-      text-align: left;
+    .ai-rules-list li {
+      margin-bottom: 4px;
     }
 
-    .token-swatch {
-      width: 32px;
-      height: 18px;
-      border-radius: 4px;
-      border: 1px solid rgba(0,0,0,0.12);
-    }
-
-    /* =========================
-       THEMES TAB – HARD-CODED SWATCHES
-       ========================= */
-
-    .theme-swatches {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--spacing-md);
-      margin-bottom: var(--spacing-lg);
-    }
-
-    .theme-swatch {
-      flex: 0 0 180px;
-      border-radius: var(--border-radius-default);
-      overflow: hidden;
-      box-shadow: var(--shadow-card);
-      border: 1px solid rgba(0,0,0,0.08);
-      background: var(--color-surface-default);
-    }
-
-    .theme-swatch-header {
-      padding: var(--spacing-md);
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    .theme-swatch-body {
-      padding: var(--spacing-md);
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-sm);
-      font-size: 12px;
-    }
-
-    .theme-swatch-chip {
-      width: 100%;
-      height: 32px;
-      border-radius: 6px;
-      border: 1px solid rgba(0,0,0,0.18);
-    }
-
-    /* Hard-coded hex backgrounds (per requirements, no CSS variables here) */
-    .theme-swatch-chip-base {
-      background: #0066CC;
-    }
-
-    .theme-swatch-chip-entertainment {
-      background: #E50914;
-    }
-
-    .theme-swatch-chip-education {
-      background: #F4A300;
-    }
-
-    /* =========================
-       MOTION – REDUCED MOTION
-       ========================= */
-
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        scroll-behavior: auto !important;
-        animation: none !important;
-        transition: none !important;
-      }
+    /* Dark theme card border helper (Entertainment) */
+    [data-theme="entertainment"] .card {
+      border: 1px solid rgba(255,255,255,0.08);
     }
   </style>
 </head>
 <body>
-  <main>
-    <header class="ds-header">
-      <div class="ds-header-title">
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="title-block">
         <h1>PRISM Design System</h1>
-        <small>Tokens, components, themes, and AI agentic patterns – fully themeable via <code>data-theme</code>.</small>
+        <p>Tokens, components, and agentic patterns with live theme switching.</p>
       </div>
-      <div class="theme-switcher" aria-label="Theme switcher">
+      <div class="theme-switcher">
         <label for="theme-select">Theme</label>
-        <select id="theme-select">
+        <select id="theme-select" aria-label="Select design theme">
           <option value="base">Base</option>
           <option value="entertainment">Entertainment</option>
           <option value="education">Education</option>
@@ -545,27 +490,33 @@
     </header>
 
     <nav class="tabs" role="tablist" aria-label="PRISM sections">
-      <button class="tab-button" role="tab" aria-selected="true" aria-controls="tab-tokens" id="tab-tokens-btn">Tokens</button>
-      <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-components" id="tab-components-btn">Components</button>
-      <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-themes" id="tab-themes-btn">Themes</button>
-      <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-ai-rules" id="tab-ai-rules-btn">AI Rules</button>
+      <button class="tab-button" role="tab" aria-selected="true" aria-controls="tab-tokens" id="tab-tokens-btn">
+        Tokens
+      </button>
+      <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-components" id="tab-components-btn">
+        Components
+      </button>
+      <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-themes" id="tab-themes-btn">
+        Themes
+      </button>
+      <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-ai-rules" id="tab-ai-rules-btn">
+        AI Rules
+      </button>
     </nav>
 
     <!-- TOKENS TAB -->
     <section class="tab-panel" id="tab-tokens" role="tabpanel" aria-labelledby="tab-tokens-btn" aria-hidden="false">
-      <div class="grid">
-        <div>
-          <h2>Semantic tokens</h2>
-          <p>
-            PRISM uses semantic tokens to express intent—never raw primitives in component styles.
-            Theme switching updates these tokens so components adapt automatically.
-          </p>
-
-          <table class="token-table" aria-label="Core semantic tokens">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Semantic tokens</div>
+          <div class="card-meta">Mapped to exact theme hex values</div>
+        </div>
+        <div class="card-body">
+          <table aria-label="Semantic tokens">
             <thead>
               <tr>
                 <th>Token</th>
-                <th>Intent</th>
+                <th>Role</th>
                 <th>Current value</th>
                 <th>Swatch</th>
               </tr>
@@ -574,87 +525,78 @@
               <tr>
                 <td><code>--color-action-primary</code></td>
                 <td>Primary CTAs, focused elements</td>
-                <td id="token-action-primary-value">#0066CC</td>
-                <td><div class="token-swatch" id="token-action-primary-swatch"></div></td>
+                <td id="val-action-primary">#0066CC</td>
+                <td><div class="swatch" id="swatch-action-primary"></div></td>
               </tr>
               <tr>
                 <td><code>--color-surface-default</code></td>
-                <td>App background, base surfaces</td>
-                <td id="token-surface-default-value">#FFFFFF</td>
-                <td><div class="token-swatch" id="token-surface-default-swatch"></div></td>
+                <td>App background</td>
+                <td id="val-surface-default">#FFFFFF</td>
+                <td><div class="swatch" id="swatch-surface-default"></div></td>
               </tr>
               <tr>
                 <td><code>--color-surface-raised</code></td>
                 <td>Cards, modals, dropdowns</td>
-                <td id="token-surface-raised-value">#F5F5F5</td>
-                <td><div class="token-swatch" id="token-surface-raised-swatch"></div></td>
+                <td id="val-surface-raised">#F5F5F5</td>
+                <td><div class="swatch" id="swatch-surface-raised"></div></td>
               </tr>
               <tr>
                 <td><code>--color-text-primary</code></td>
                 <td>Main body text</td>
-                <td id="token-text-primary-value">#111111</td>
-                <td><div class="token-swatch" id="token-text-primary-swatch"></div></td>
+                <td id="val-text-primary">#111111</td>
+                <td><div class="swatch" id="swatch-text-primary"></div></td>
               </tr>
               <tr>
                 <td><code>--color-text-inverse</code></td>
-                <td>Text on colored / dark surfaces</td>
-                <td id="token-text-inverse-value">#FFFFFF</td>
-                <td><div class="token-swatch" id="token-text-inverse-swatch"></div></td>
+                <td>Text on dark/colored surfaces</td>
+                <td id="val-text-inverse">#FFFFFF</td>
+                <td><div class="swatch" id="swatch-text-inverse"></div></td>
               </tr>
               <tr>
                 <td><code>--color-feedback-success</code></td>
-                <td>Positive confirmations</td>
+                <td>Success feedback</td>
                 <td>#00AA44</td>
-                <td><div class="token-swatch" style="background:#00AA44;"></div></td>
+                <td><div class="swatch" style="background:#00AA44;"></div></td>
               </tr>
               <tr>
                 <td><code>--color-feedback-warning</code></td>
-                <td>Cautionary states</td>
+                <td>Warning feedback</td>
                 <td>#F4A300</td>
-                <td><div class="token-swatch" style="background:#F4A300;"></div></td>
+                <td><div class="swatch" style="background:#F4A300;"></div></td>
               </tr>
               <tr>
                 <td><code>--color-feedback-danger</code></td>
-                <td>Errors, critical alerts</td>
+                <td>Error / danger feedback</td>
                 <td>#E50914</td>
-                <td><div class="token-swatch" style="background:#E50914;"></div></td>
+                <td><div class="swatch" style="background:#E50914;"></div></td>
               </tr>
             </tbody>
           </table>
-        </div>
 
-        <div>
-          <h3>Token mapping example</h3>
-          <div class="card">
-            <div class="card-section-title">Button → tokens</div>
-            <p>
-              Primary button background uses <code>var(--color-action-primary)</code> and text uses
-              <code>var(--color-text-inverse)</code> (overridden to <code>#111111</code> in Education).
-            </p>
-            <pre><code>// Primary button (Base & Entertainment)
-.btn-primary {
-  background: var(--color-action-primary);   // semantic: primary CTA
-  color: var(--color-text-inverse);         // semantic: inverse text
-}
+          <div class="layout-two-column">
+            <div>
+              <h3 style="margin-top:0;font-size:0.95rem;">Usage notes</h3>
+              <ul class="ai-rules-list">
+                <li><strong>Actions:</strong> Use <code>--color-action-primary</code> only for primary CTAs and focus states.</li>
+                <li><strong>Surfaces:</strong> Use <code>--color-surface-default</code> for page background, <code>--color-surface-raised</code> for cards.</li>
+                <li><strong>Text:</strong> Use <code>--color-text-primary</code> on light surfaces, <code>--color-text-inverse</code> on dark/colored.</li>
+                <li><strong>Feedback:</strong> Success, warning, and danger tokens are for status—not destructive actions.</li>
+              </ul>
+            </div>
+            <div>
+              <h3 style="margin-top:0;font-size:0.95rem;">Token setup (CSS)</h3>
+              <pre><code>/* Semantic tokens – Base theme defaults */
+:root {
+  --color-action-primary: #0066CC;  /* Primary CTAs */
+  --color-surface-default: #FFFFFF; /* App background */
+  --color-text-primary: #111111;    /* Main text */
+  --color-surface-raised: #F5F5F5;  /* Cards, modals */
+  --color-text-inverse: #FFFFFF;    /* Text on colored surfaces */
 
-/* Education theme override: light amber background needs dark text */
-[data-theme="education"] .btn-primary {
-  color: #111111;
+  --color-feedback-success: #00AA44; /* Success feedback */
+  --color-feedback-warning: #F4A300; /* Warning feedback */
+  --color-feedback-danger: #E50914;  /* Error feedback */
 }</code></pre>
-          </div>
-
-          <div class="card" style="margin-top:16px;">
-            <div class="card-section-title">Nested cards</div>
-            <p>
-              Cards inside cards switch to <code>var(--color-surface-default)</code> to maintain hierarchy.
-            </p>
-            <div class="card">
-              <div class="card-title">Outer card</div>
-              <p>This is a raised surface using <code>--color-surface-raised</code>.</p>
-              <div class="card" style="margin-top:12px;">
-                <div class="card-title">Inner card</div>
-                <p>Direct child card uses <code>--color-surface-default</code> with subtle border and shadow.</p>
-              </div>
             </div>
           </div>
         </div>
@@ -663,225 +605,366 @@
 
     <!-- COMPONENTS TAB -->
     <section class="tab-panel" id="tab-components" role="tabpanel" aria-labelledby="tab-components-btn" aria-hidden="true">
-      <h2>Core components</h2>
-      <p>
-        Each component preview shows visual variants, token mappings, and example code. All styles rely on semantic tokens,
-        so theme switching updates them instantly.
-      </p>
-
-      <!-- BUTTON -->
-      <section style="margin-top:24px;">
-        <h3>Button</h3>
-        <div class="grid">
-          <div>
-            <div class="card">
-              <div class="card-section-title">Preview</div>
-              <div class="btn-row" aria-label="Button variants preview">
-                <button class="btn btn-primary">Primary</button>
-                <button class="btn btn-secondary">Secondary</button>
-                <button class="btn btn-ghost">Ghost</button>
-              </div>
-              <p style="margin-top:12px;font-size:13px;">
-                Primary buttons use <code>--color-action-primary</code> and inverse text. In Education theme,
-                text color is explicitly overridden to <code>#111111</code> to maintain a 4.5:1 contrast ratio.
-              </p>
-            </div>
-          </div>
-          <div>
-            <div class="card">
-              <div class="card-section-title">Code snippet</div>
-              <pre><code>&lt;button class="btn btn-primary"&gt;Primary&lt;/button&gt;
-&lt;button class="btn btn-secondary"&gt;Secondary&lt;/button&gt;
-&lt;button class="btn btn-ghost"&gt;Ghost&lt;/button&gt;</code></pre>
-              <div class="card-section-title" style="margin-top:12px;">Token mapping</div>
-              <ul style="font-size:13px; padding-left:18px; margin:0;">
-                <li><strong>Primary:</strong> background <code>--color-action-primary</code>, text <code>--color-text-inverse</code></li>
-                <li><strong>Secondary:</strong> border neutral, text <code>--color-text-primary</code></li>
-                <li><strong>Ghost:</strong> transparent background, text <code>--color-text-primary</code></li>
-              </ul>
-            </div>
-          </div>
+      <!-- BUTTON COMPONENT -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Button</div>
+          <div class="card-meta">Primary, secondary, and ghost variants</div>
         </div>
-      </section>
-
-      <!-- CARD -->
-      <section style="margin-top:32px;">
-        <h3>Card</h3>
-        <div class="grid">
+        <div class="card-body layout-two-column">
           <div>
-            <div class="card">
-              <div class="card-title">Raised card</div>
-              <div class="card-subtitle">Uses <code>--color-surface-raised</code> and <code>--border-radius-default</code>.</div>
-              <p>
-                Cards provide a raised surface for grouping content. Nested cards automatically switch to
-                <code>--color-surface-default</code> for clear hierarchy.
-              </p>
-              <button class="btn btn-secondary">Secondary action</button>
+            <p style="margin-top:0;font-size:0.9rem;">
+              Primary buttons use <code>var(--color-action-primary)</code> for background and
+              <code>var(--color-text-inverse)</code> for text, except in the Education theme where text is forced to
+              <code>#111111</code> for contrast.
+            </p>
+            <div class="btn-row" aria-label="Button variants preview">
+              <button class="btn btn-primary">Primary action</button>
+              <button class="btn btn-secondary">Secondary</button>
+              <button class="btn btn-ghost">Ghost</button>
             </div>
+            <dl style="margin-top:12px;">
+              <dt>Primary</dt>
+              <dd>Background <code>var(--color-action-primary)</code>, text <code>var(--color-text-inverse)</code> (Education overrides to <code>#111111</code>).</dd>
+              <dt>Secondary</dt>
+              <dd>Border and text use <code>var(--color-action-primary)</code> on default surface.</dd>
+              <dt>Ghost</dt>
+              <dd>Text-only emphasis using <code>var(--color-action-primary)</code>, no solid background.</dd>
+            </dl>
           </div>
           <div>
-            <div class="card">
-              <div class="card-section-title">Code snippet</div>
-              <pre><code>.card {
-  background: var(--color-surface-raised);   // elevated surface
-  border-radius: var(--border-radius-default);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            <h3 style="margin-top:0;font-size:0.95rem;">Button CSS</h3>
+            <pre><code>.btn {
+  /* Shared button styles */
+  border-radius: 999px;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--color-text-primary);
+  /* Motion: micro-interactions use 200ms */
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease;
 }
 
-/* Nested card inside card */
-.card .card {
-  background: var(--color-surface-default);  // base surface
+/* Primary – uses semantic action token */
+.btn-primary {
+  background: var(--color-action-primary);   /* Primary CTA */
+  color: var(--color-text-inverse);         /* Text on colored background */
+}
+
+/* Education theme override: light amber background needs dark text */
+[data-theme="education"] .btn-primary {
+  color: #111111; /* Explicit contrast rule */
+}
+
+/* Secondary and ghost variants */
+.btn-secondary {
+  background: var(--color-surface-default);
+  color: var(--color-action-primary);
+  border-color: var(--color-action-primary);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-action-primary);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
 }</code></pre>
-            </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- INPUT -->
-      <section style="margin-top:32px;">
-        <h3>Input</h3>
-        <div class="grid">
+      <!-- CARD COMPONENT -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Card</div>
+          <div class="card-meta">Raised surfaces and nested cards</div>
+        </div>
+        <div class="card-body layout-two-column">
           <div>
+            <p style="margin-top:0;font-size:0.9rem;">
+              Cards use <code>var(--color-surface-raised)</code> and <code>var(--border-radius-default)</code>.
+              Nested cards switch to <code>var(--color-surface-default)</code> with a subtle border and shadow.
+            </p>
             <div class="card">
-              <div class="field">
-                <label for="example-input">Label</label>
-                <input id="example-input" class="input" placeholder="Type something…" />
-                <div class="input-helper">Helper text using <code>--color-text-primary</code> at reduced opacity.</div>
+              <div class="card-header">
+                <div class="card-title">Outer card</div>
+                <div class="card-meta">Raised surface</div>
               </div>
-              <div class="field">
-                <label for="example-input-error">With error</label>
-                <input id="example-input-error" class="input" value="Invalid value" aria-invalid="true" />
-                <div class="input-error">
-                  <span aria-hidden="true">⚠️</span>
-                  <span>Error message using <code>--color-feedback-danger</code>.</span>
+              <div class="card-body">
+                <p style="margin-top:0;font-size:0.85rem;">
+                  This is a raised card using the semantic raised surface token.
+                </p>
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title">Nested card</div>
+                    <div class="card-meta">Uses default surface</div>
+                  </div>
+                  <div class="card-body">
+                    <p style="margin-top:0;font-size:0.85rem;">
+                      Nested cards use the default surface to maintain hierarchy and separation.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           <div>
-            <div class="card">
-              <div class="card-section-title">Code snippet</div>
-              <pre><code>&lt;div class="field"&gt;
-  &lt;label for="email"&gt;Email&lt;/label&gt;
-  &lt;input id="email" class="input" type="email" /&gt;
-  &lt;div class="input-helper"&gt;We'll never share your email.&lt;/div&gt;
-&lt;/div&gt;
+            <h3 style="margin-top:0;font-size:0.95rem;">Card CSS</h3>
+            <pre><code>.card {
+  background: var(--color-surface-raised);     /* Raised surface */
+  border-radius: var(--border-radius-default); /* Theme radius */
+  padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  border: var(--card-border);                  /* Entertainment uses light border */
+}
 
-.input {
-  background: var(--color-surface-default);
-  color: var(--color-text-primary);
+/* Nested cards: use default surface for contrast */
+.card .card {
+  background: var(--color-surface-default);    /* Default surface inside card */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.1);
 }</code></pre>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- BADGE -->
-      <section style="margin-top:32px;">
-        <h3>Badge</h3>
-        <div class="grid">
-          <div>
-            <div class="card">
-              <div class="card-section-title">Preview</div>
-              <div class="btn-row">
-                <span class="badge badge-neutral">Neutral</span>
-                <span class="badge badge-success">Success</span>
-                <span class="badge badge-warning">Warning</span>
-                <span class="badge badge-danger">Danger</span>
-              </div>
-              <p style="margin-top:12px;font-size:13px;">
-                Confidence badges use feedback tokens: success (high), warning (medium), danger (low).
-              </p>
-            </div>
-          </div>
-          <div>
-            <div class="card">
-              <div class="card-section-title">Token mapping</div>
-              <ul style="font-size:13px; padding-left:18px; margin:0;">
-                <li><strong>High confidence:</strong> <code>--color-feedback-success</code></li>
-                <li><strong>Medium confidence:</strong> <code>--color-feedback-warning</code></li>
-                <li><strong>Low confidence:</strong> <code>--color-feedback-danger</code></li>
-              </ul>
-              <pre style="margin-top:12px;"><code>.badge-success {
-  background: var(--color-feedback-success);
-  color: var(--color-text-inverse);
-}</code></pre>
-            </div>
-          </div>
-        </div>
-      </section>
-    </section>
-
-    <!-- THEMES TAB -->
-    <section class="tab-panel" id="tab-themes" role="tabpanel" aria-labelledby="tab-themes-btn" aria-hidden="true">
-      <h2>Themes</h2>
-      <p>
-        PRISM themes are applied via <code>data-theme</code> on the <code>&lt;html&gt;</code> element. JavaScript updates
-        both the attribute and the CSS variables so components respond instantly without reloading the page.
-      </p>
-
-      <div class="theme-swatches" aria-label="Theme color swatches">
-        <div class="theme-swatch">
-          <div class="theme-swatch-header">Base theme</div>
-          <div class="theme-swatch-body">
-            <div class="theme-swatch-chip theme-swatch-chip-base"></div>
-            <div><strong>Primary:</strong> #0066CC</div>
-            <div><strong>Surface default:</strong> #FFFFFF</div>
-            <div><strong>Text primary:</strong> #111111</div>
-          </div>
-        </div>
-
-        <div class="theme-swatch">
-          <div class="theme-swatch-header">Entertainment theme</div>
-          <div class="theme-swatch-body">
-            <div class="theme-swatch-chip theme-swatch-chip-entertainment"></div>
-            <div><strong>Primary:</strong> #E50914</div>
-            <div><strong>Surface default:</strong> #0A0A0A</div>
-            <div><strong>Text primary:</strong> #FFFFFF</div>
-          </div>
-        </div>
-
-        <div class="theme-swatch">
-          <div class="theme-swatch-header">Education theme</div>
-          <div class="theme-swatch-body">
-            <div class="theme-swatch-chip theme-swatch-chip-education"></div>
-            <div><strong>Primary:</strong> #F4A300</div>
-            <div><strong>Surface default:</strong> #FFFBF2</div>
-            <div><strong>Text primary:</strong> #111111</div>
           </div>
         </div>
       </div>
 
-      <div class="grid">
-        <div>
-          <div class="card">
-            <div class="card-section-title">Theme switching contract</div>
-            <p>
-              When the theme changes, JavaScript must:
+      <!-- INPUT COMPONENT -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Input</div>
+          <div class="card-meta">Accessible text fields</div>
+        </div>
+        <div class="card-body layout-two-column">
+          <div>
+            <div class="field">
+              <label for="demo-input">Label</label>
+              <input id="demo-input" type="text" placeholder="Type something…" />
+              <div class="field-helper">Helper text explaining the expected input.</div>
+              <div class="field-error" aria-live="polite">
+                <span aria-hidden="true">⚠️</span>
+                <span>Error message using danger feedback token.</span>
+              </div>
+            </div>
+            <p style="margin-top:12px;font-size:0.85rem;">
+              Inputs use <code>var(--color-surface-default)</code> for background and
+              <code>var(--color-text-primary)</code> for text. Focus states are always visible and use
+              <code>var(--color-action-primary)</code>.
             </p>
-            <ul style="font-size:13px; padding-left:18px; margin:0;">
-              <li><strong>1.</strong> Update <code>data-theme</code> on <code>&lt;html&gt;</code>.</li>
-              <li><strong>2.</strong> Redefine all CSS variables with the exact hex values from the theme spec.</li>
-              <li><strong>3.</strong> Ensure components update instantly without page reload.</li>
-            </ul>
+          </div>
+          <div>
+            <h3 style="margin-top:0;font-size:0.95rem;">Input CSS</h3>
+            <pre><code>.field label {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.field input {
+  background: var(--color-surface-default);
+  color: var(--color-text-primary);
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.2);
+  padding: 8px 10px;
+}
+
+/* Focus: visible, never outline: none */
+.field input:focus-visible {
+  outline: 2px solid var(--color-action-primary); /* Focus uses action primary */
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+/* Error text uses feedback danger token */
+.field-error {
+  color: var(--color-feedback-danger);
+}</code></pre>
           </div>
         </div>
-        <div>
-          <div class="card">
-            <div class="card-section-title">Implementation snippet</div>
-            <pre><code>function applyTheme(theme) {
-  const root = document.documentElement;
-  root.dataset.theme = theme;
+      </div>
 
-  if (theme === 'base') {
-    root.style.setProperty('--color-action-primary', '#0066CC');
-    root.style.setProperty('--color-surface-default', '#FFFFFF');
-    root.style.setProperty('--color-text-primary', '#111111');
-    root.style.setProperty('--color-surface-raised', '#F5F5F5');
-    root.style.setProperty('--color-text-inverse', '#FFFFFF');
-  }
-  // ...other themes
+      <!-- BADGE COMPONENT -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Badge</div>
+          <div class="card-meta">Status and confidence indicators</div>
+        </div>
+        <div class="card-body layout-two-column">
+          <div>
+            <div class="btn-row" aria-label="Badge variants preview">
+              <span class="badge badge-neutral">Neutral</span>
+              <span class="badge badge-success">Success</span>
+              <span class="badge badge-warning">Warning</span>
+              <span class="badge badge-danger">Danger</span>
+            </div>
+            <p style="margin-top:12px;font-size:0.85rem;">
+              Confidence badges map to feedback tokens: high → success, medium → warning, low → danger.
+              Labels are always visible text, not just color.
+            </p>
+          </div>
+          <div>
+            <h3 style="margin-top:0;font-size:0.95rem;">Badge CSS</h3>
+            <pre><code>.badge {
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.badge-success {
+  background: var(--color-feedback-success);  /* High confidence */
+  color: var(--color-text-inverse);
+}
+
+.badge-warning {
+  background: var(--color-feedback-warning);  /* Medium confidence */
+  color: var(--color-text-primary);
+}
+
+.badge-danger {
+  background: var(--color-feedback-danger);   /* Low confidence / errors */
+  color: var(--color-text-inverse);
 }</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THEMES TAB -->
+    <section class="tab-panel" id="tab-themes" role="tabpanel" aria-labelledby="tab-themes-btn" aria-hidden="true">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Theme overview</div>
+          <div class="card-meta">Base, Entertainment, and Education</div>
+        </div>
+        <div class="card-body">
+          <p style="margin-top:0;font-size:0.9rem;">
+            Use the dropdown at the top to switch themes. JavaScript updates <code>data-theme</code> on
+            <code>&lt;html&gt;</code> and redefines all CSS variables to match the selected theme’s exact hex values.
+          </p>
+
+          <div class="theme-swatch-row" aria-label="Theme color swatches">
+            <button type="button" class="theme-swatch-btn" data-theme-target="base">
+              <div class="swatch swatch-base"></div>
+              <div>
+                <div style="font-weight:600;font-size:0.85rem;">Base</div>
+                <div style="font-size:0.8rem;opacity:0.8;">Primary #0066CC</div>
+              </div>
+            </button>
+            <button type="button" class="theme-swatch-btn" data-theme-target="entertainment">
+              <div class="swatch swatch-entertainment"></div>
+              <div>
+                <div style="font-weight:600;font-size:0.85rem;">Entertainment</div>
+                <div style="font-size:0.8rem;opacity:0.8;">Primary #E50914</div>
+              </div>
+            </button>
+            <button type="button" class="theme-swatch-btn" data-theme-target="education">
+              <div class="swatch swatch-education"></div>
+              <div>
+                <div style="font-weight:600;font-size:0.85rem;">Education</div>
+                <div style="font-size:0.8rem;opacity:0.8;">Primary #F4A300</div>
+              </div>
+            </button>
+          </div>
+
+          <div class="layout-two-column">
+            <div>
+              <h3 style="margin-top:0;font-size:0.95rem;">Theme tokens</h3>
+              <table aria-label="Theme token values">
+                <thead>
+                  <tr>
+                    <th>Token</th>
+                    <th>Base</th>
+                    <th>Entertainment</th>
+                    <th>Education</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>--color-action-primary</code></td>
+                    <td>#0066CC</td>
+                    <td>#E50914</td>
+                    <td>#F4A300</td>
+                  </tr>
+                  <tr>
+                    <td><code>--color-surface-default</code></td>
+                    <td>#FFFFFF</td>
+                    <td>#0A0A0A</td>
+                    <td>#FFFBF2</td>
+                  </tr>
+                  <tr>
+                    <td><code>--color-text-primary</code></td>
+                    <td>#111111</td>
+                    <td>#FFFFFF</td>
+                    <td>#111111</td>
+                  </tr>
+                  <tr>
+                    <td><code>--color-surface-raised</code></td>
+                    <td>#F5F5F5</td>
+                    <td>#1A1A1A</td>
+                    <td>#F5F5F5</td>
+                  </tr>
+                  <tr>
+                    <td><code>--color-text-inverse</code></td>
+                    <td>#FFFFFF</td>
+                    <td>#FFFFFF</td>
+                    <td>#FFFFFF</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <h3 style="margin-top:0;font-size:0.95rem;">Theme switching logic (JS)</h3>
+              <pre><code>const themes = {
+  base: {
+    '--color-action-primary': '#0066CC',
+    '--color-surface-default': '#FFFFFF',
+    '--color-text-primary': '#111111',
+    '--color-surface-raised': '#F5F5F5',
+    '--color-text-inverse': '#FFFFFF'
+  },
+  entertainment: {
+    '--color-action-primary': '#E50914',
+    '--color-surface-default': '#0A0A0A',
+    '--color-text-primary': '#FFFFFF',
+    '--color-surface-raised': '#1A1A1A',
+    '--color-text-inverse': '#FFFFFF'
+  },
+  education: {
+    '--color-action-primary': '#F4A300',
+    '--color-surface-default': '#FFFBF2',
+    '--color-text-primary': '#111111',
+    '--color-surface-raised': '#F5F5F5',
+    '--color-text-inverse': '#FFFFFF'
+  }
+};
+
+function applyTheme(name) {
+  const root = document.documentElement;
+  root.setAttribute('data-theme', name); // Required by PRISM
+  const tokens = themes[name];
+  Object.keys(tokens).forEach(key =&gt; {
+    root.style.setProperty(key, tokens[key]); // Redefine CSS variables
+  });
+}</code></pre>
+            </div>
           </div>
         </div>
       </div>
@@ -889,78 +972,68 @@
 
     <!-- AI RULES TAB -->
     <section class="tab-panel" id="tab-ai-rules" role="tabpanel" aria-labelledby="tab-ai-rules-btn" aria-hidden="true">
-      <h2>AI agentic patterns</h2>
-      <p>
-        PRISM includes opinionated patterns for AI intent previews, confidence communication, and escalation flows.
-        Confidence is always visible via text and color, and low confidence paths must expose human handoff.
-      </p>
-
-      <div class="grid">
-        <div>
-          <div class="card">
-            <div class="card-section-title">Intent preview card</div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Agentic UI patterns</div>
+          <div class="card-meta">Intent preview, confidence, and escalation</div>
+        </div>
+        <div class="card-body layout-two-column">
+          <div>
             <div class="intent-preview">
               <div class="intent-header">
-                <div>
-                  <div class="intent-title">Summarize quarterly report</div>
-                  <div class="intent-meta">Source: <strong>Q2_report.pdf</strong> • Scope: 3 pages</div>
-                </div>
-                <span class="badge badge-warning">Confidence: Medium</span>
+                <div class="intent-title">Intent preview: Update billing address</div>
+                <span class="badge badge-warning" aria-label="Medium confidence">
+                  <span aria-hidden="true">●</span> Confidence: Medium
+                </span>
               </div>
-              <p class="intent-note">
-                The model is moderately confident. Some sections contain ambiguous financial terms that may need human review.
-              </p>
+              <div class="intent-meta">
+                The agent plans to update the billing address for your primary payment method.
+              </div>
               <div class="intent-actions">
                 <button class="btn btn-primary">Approve</button>
-                <button class="btn btn-secondary">Edit</button>
-                <button class="btn btn-ghost">View source</button>
+                <button class="btn btn-secondary">Edit details</button>
+                <button class="btn btn-ghost">Cancel</button>
               </div>
-            </div>
-          </div>
-
-          <div class="card" style="margin-top:16px;">
-            <div class="card-section-title">Low confidence escalation</div>
-            <div class="intent-preview">
-              <div class="intent-header">
-                <div>
-                  <div class="intent-title">Generate legal summary</div>
-                  <div class="intent-meta">Source: Contract_v7.docx</div>
-                </div>
-                <span class="badge badge-danger">Confidence: Low</span>
-              </div>
-              <p class="intent-note">
-                Uncertain due to missing data and ambiguous clauses. This output should be reviewed by a legal professional.
+              <p style="margin:8px 0 0;font-size:0.8rem;">
+                Medium confidence → user can approve or edit. Explanation clarifies why the agent is uncertain.
               </p>
-              <div class="intent-actions">
-                <button class="btn btn-secondary">Review draft</button>
-                <button class="btn btn-ghost">Discard suggestion</button>
-                <button class="btn btn-primary">Talk to a person</button>
-              </div>
             </div>
           </div>
-        </div>
-
-        <div>
-          <div class="card">
-            <div class="card-section-title">Pattern checklist</div>
-            <ul style="font-size:13px; padding-left:18px; margin:0;">
-              <li><strong>Intent preview:</strong> always card + badge + actions.</li>
-              <li><strong>High confidence:</strong> success badge (green) + “Approve” primary action.</li>
-              <li><strong>Medium confidence:</strong> show both “Approve” and “Edit” actions.</li>
-              <li><strong>Low confidence:</strong> danger badge (red) + explanation + “Talk to a person” handoff.</li>
-              <li><strong>Accessibility:</strong> confidence label must be visible text, not just color.</li>
+          <div>
+            <h3 style="margin-top:0;font-size:0.95rem;">Confidence &amp; escalation rules</h3>
+            <ul class="ai-rules-list">
+              <li><strong>High confidence:</strong> Use success badge (<code>var(--color-feedback-success)</code>), offer “Approve” as primary action.</li>
+              <li><strong>Medium confidence:</strong> Use warning badge, always offer both “Approve” and “Edit” actions.</li>
+              <li><strong>Low confidence:</strong> Use danger badge and show a clear human handoff option (e.g., “Talk to a person”).</li>
+              <li><strong>Explanation:</strong> For low confidence, explain why (e.g., “Uncertain due to missing data”).</li>
+              <li><strong>Accessibility:</strong> Confidence labels must be visible text, not just color.</li>
             </ul>
           </div>
         </div>
       </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Accessibility & motion</div>
+          <div class="card-meta">Contrast, focus, and reduced motion</div>
+        </div>
+        <div class="card-body">
+          <ul class="ai-rules-list">
+            <li><strong>Contrast:</strong> Text on any background must meet at least 4.5:1 (3:1 for large text).</li>
+            <li><strong>Primary buttons:</strong> Base &amp; Entertainment use white text; Education uses #111111 on amber.</li>
+            <li><strong>Focus:</strong> All interactive controls have visible focus using a 2px outline with <code>--color-action-primary</code>.</li>
+            <li><strong>Motion:</strong> Micro-interactions use 200ms transitions and respect <code>prefers-reduced-motion: reduce</code>.</li>
+            <li><strong>Names:</strong> All controls have accessible names via visible text or <code>aria-label</code>.</li>
+          </ul>
+        </div>
+      </div>
     </section>
-  </main>
+  </div>
 
   <script>
     // =========================
     // THEME DEFINITIONS
     // =========================
-
     const PRISM_THEMES = {
       base: {
         '--color-action-primary': '#0066CC',
@@ -985,74 +1058,66 @@
       }
     };
 
-    // =========================
-    // THEME APPLICATION
-    // =========================
-
-    function applyTheme(themeKey) {
-      const theme = PRISM_THEMES[themeKey];
+    function applyTheme(themeName) {
       const root = document.documentElement;
+      const tokens = PRISM_THEMES[themeName];
+      if (!tokens) return;
 
-      if (!theme) return;
+      // Update data-theme on <html>
+      root.setAttribute('data-theme', themeName);
 
-      // 1. Update data-theme on <html>
-      root.dataset.theme = themeKey;
-
-      // 2. Redefine all CSS variables with exact hex values
-      Object.entries(theme).forEach(([token, value]) => {
-        root.style.setProperty(token, value);
+      // Redefine all CSS variables for the theme
+      Object.keys(tokens).forEach(token => {
+        root.style.setProperty(token, tokens[token]);
       });
 
-      // 3. Update token table swatches / values
-      document.getElementById('token-action-primary-value').textContent = theme['--color-action-primary'];
-      document.getElementById('token-surface-default-value').textContent = theme['--color-surface-default'];
-      document.getElementById('token-surface-raised-value').textContent = theme['--color-surface-raised'];
-      document.getElementById('token-text-primary-value').textContent = theme['--color-text-primary'];
-      document.getElementById('token-text-inverse-value').textContent = theme['--color-text-inverse'];
+      // Update token table values and swatches
+      document.getElementById('val-action-primary').textContent = tokens['--color-action-primary'];
+      document.getElementById('val-surface-default').textContent = tokens['--color-surface-default'];
+      document.getElementById('val-surface-raised').textContent = tokens['--color-surface-raised'];
+      document.getElementById('val-text-primary').textContent = tokens['--color-text-primary'];
+      document.getElementById('val-text-inverse').textContent = tokens['--color-text-inverse'];
 
-      document.getElementById('token-action-primary-swatch').style.background = theme['--color-action-primary'];
-      document.getElementById('token-surface-default-swatch').style.background = theme['--color-surface-default'];
-      document.getElementById('token-surface-raised-swatch').style.background = theme['--color-surface-raised'];
-      document.getElementById('token-text-primary-swatch').style.background = theme['--color-text-primary'];
-      document.getElementById('token-text-inverse-swatch').style.background = theme['--color-text-inverse'];
+      document.getElementById('swatch-action-primary').style.background = tokens['--color-action-primary'];
+      document.getElementById('swatch-surface-default').style.background = tokens['--color-surface-default'];
+      document.getElementById('swatch-surface-raised').style.background = tokens['--color-surface-raised'];
+      document.getElementById('swatch-text-primary').style.background = tokens['--color-text-primary'];
+      document.getElementById('swatch-text-inverse').style.background = tokens['--color-text-inverse'];
     }
 
-    // =========================
-    // TAB HANDLING
-    // =========================
-
-    const tabButtons = Array.from(document.querySelectorAll('.tab-button'));
-    const tabPanels = Array.from(document.querySelectorAll('.tab-panel'));
-
-    function setActiveTab(id) {
-      tabButtons.forEach(btn => {
-        const isActive = btn.getAttribute('aria-controls') === id;
-        btn.setAttribute('aria-selected', String(isActive));
-      });
-
-      tabPanels.forEach(panel => {
-        const isActive = panel.id === id;
-        panel.setAttribute('aria-hidden', String(!isActive));
-      });
-    }
-
-    tabButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('aria-controls');
-        setActiveTab(id);
-      });
-    });
-
-    // =========================
-    // THEME SWITCHER WIRING
-    // =========================
-
+    // Initialize theme switcher
     const themeSelect = document.getElementById('theme-select');
     themeSelect.addEventListener('change', (e) => {
       applyTheme(e.target.value);
     });
 
-    // Initialize default theme + tokens
+    // Swatch buttons also switch theme
+    document.querySelectorAll('.theme-swatch-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-theme-target');
+        themeSelect.value = target;
+        applyTheme(target);
+      });
+    });
+
+    // =========================
+    // TABS LOGIC
+    // =========================
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const targetId = button.getAttribute('aria-controls');
+
+        tabButtons.forEach(b => b.setAttribute('aria-selected', b === button ? 'true' : 'false'));
+        tabPanels.forEach(panel => {
+          panel.setAttribute('aria-hidden', panel.id === targetId ? 'false' : 'true');
+        });
+      });
+    });
+
+    // Initial theme application (Base)
     applyTheme('base');
   </script>
 </body>
