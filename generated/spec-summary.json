@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T02:32:20.369Z",
+  "generatedAt": "2026-05-08T02:52:35.558Z",
   "sourceFile": "ai-rules.md",
   "stats": {
     "primitiveColors": 4,
@@ -12,10 +12,10 @@
     ],
     "aiRules": {
       "token": 3,
-      "motion": 3,
+      "motion": 4,
       "theme": 3,
-      "accessibility": 2,
-      "agentic": 3
+      "accessibility": 3,
+      "agentic": 4
     }
   }
 }

@@ -18,9 +18,7 @@ const figmaEmbed = document.getElementById("figmaEmbed");
 
 const FIGMA_FILE_URL = "https://www.figma.com/design/UKSBj9G6nXoBrjQKKuFPWS/Prism-Design-System---Agentic-UI-Pattern-Example?node-id=0-1&t=VrDGGgsvbFo0A4LK-1";
 
-// ------------------------------------------------------------
 // Helper: darken a hex colour by a percentage (e.g., 0.15 = 15%)
-// ------------------------------------------------------------
 function darkenColor(hex, percent) {
   if (!hex || !hex.startsWith('#')) return hex;
   const r = parseInt(hex.slice(1,3), 16);
@@ -36,17 +34,15 @@ function darkenColor(hex, percent) {
 let themeMap = {};
 let tokenLoaded = false;
 
-// ------------------------------------------------------------
 // Load all theme JSON files and semantic.json
-// ------------------------------------------------------------
 async function loadTokens() {
   try {
-    console.log("Loading design tokens from /tokens/themes/ ... - app.js:44");
+    console.log("Loading design tokens from /tokens/themes/ ... - app.js:40");
 
     const [base, entertainment, education, semantic] = await Promise.all([
-      fetch('tokens/themes/base.json - app.js:47').then(res => { if (!res.ok) throw new Error(`base.json ${res.status}`); return res.json(); }).catch(e => { console.warn("base.json failed", e); return {}; }),
-      fetch('tokens/themes/entertainment.json - app.js:48').then(res => { if (!res.ok) throw new Error(`entertainment.json ${res.status}`); return res.json(); }).catch(e => { console.warn("entertainment.json failed", e); return {}; }),
-      fetch('tokens/themes/education.json - app.js:49').then(res => { if (!res.ok) throw new Error(`education.json ${res.status}`); return res.json(); }).catch(e => { console.warn("education.json failed", e); return {}; }),
+      fetch('tokens/themes/base.json - app.js:43').then(res => { if (!res.ok) throw new Error(`base.json ${res.status}`); return res.json(); }).catch(e => { console.warn("base.json failed", e); return {}; }),
+      fetch('tokens/themes/entertainment.json - app.js:44').then(res => { if (!res.ok) throw new Error(`entertainment.json ${res.status}`); return res.json(); }).catch(e => { console.warn("entertainment.json failed", e); return {}; }),
+      fetch('tokens/themes/education.json - app.js:45').then(res => { if (!res.ok) throw new Error(`education.json ${res.status}`); return res.json(); }).catch(e => { console.warn("education.json failed", e); return {}; }),
       fetch('tokens/semantic.json').then(res => res.ok ? res.json() : {}).catch(() => ({}))
     ]);
 
@@ -66,7 +62,6 @@ async function loadTokens() {
       if (!radius) {
         radius = themeName === 'entertainment' ? "0px" : (themeName === 'education' ? "10px" : "6px");
       }
-      // Convert "6px" -> integer 6 (for JS style)
       const radiusInt = parseInt(radius, 10) || 6;
 
       return {
@@ -91,20 +86,17 @@ async function loadTokens() {
     };
 
     tokenLoaded = true;
-    console.log("✅ Design tokens loaded. Theme map: - app.js:94", themeMap);
+    console.log("✅ Design tokens loaded. Theme map: - app.js:89", themeMap);
     renderSpec(); // re-render after load
   } catch (err) {
-    console.error("❌ Fatal error loading design tokens - app.js:97", err);
+    console.error("❌ Fatal error loading design tokens - app.js:92", err);
     tokenLoaded = false;
-    // Fallback: show an error message on the preview card
     if (uiCard) uiCard.style.border = "2px solid red";
     if (previewBody) previewBody.innerText = "Error loading design tokens. Check console.";
   }
 }
 
-// ------------------------------------------------------------
-// Note parsing and UI update (unchanged logic)
-// ------------------------------------------------------------
+// Note parsing and UI update
 function parseNotes(notes) {
   const lower = (notes || "").toLowerCase();
   return {
@@ -165,14 +157,13 @@ function badgeConfigForState(badgeState) {
 
 function applyPreview(spec) {
   if (!tokenLoaded) {
-    console.warn("Tokens not loaded yet, skipping preview update - app.js:168");
+    console.warn("Tokens not loaded yet, skipping preview update - app.js:160");
     return spec;
   }
   const finalSpec = applyNoteTweaks(spec);
   const themeTokens = themeMap[finalSpec.computed.theme] || themeMap.base;
   const badge = badgeConfigForState(finalSpec.computed.badgeState);
 
-  // Apply surface & card classes
   themePreviewSurface.className = `preview-surface ${themeTokens.surfaceClass}`;
   uiCard.className = `ui-card ${themeTokens.cardClass}`;
 
@@ -182,7 +173,6 @@ function applyPreview(spec) {
   previewBadge.textContent = badge.label;
   livePreviewButton.textContent = finalSpec.computed.label;
 
-  // Reset button styles
   livePreviewButton.style.border = "none";
   livePreviewButton.style.borderWidth = "0";
   livePreviewButton.style.background = "transparent";
@@ -198,7 +188,6 @@ function applyPreview(spec) {
   secondaryPreviewButton.style.color = themeTokens.actionPrimary;
   secondaryPreviewButton.style.borderRadius = `${buttonRadius}px`;
 
-  // Variant styles
   if (finalSpec.computed.variant === "ghost") {
     livePreviewButton.style.background = "transparent";
     livePreviewButton.style.color = themeTokens.actionPrimary;
@@ -206,12 +195,11 @@ function applyPreview(spec) {
   } else if (finalSpec.computed.variant === "success") {
     livePreviewButton.style.background = themeTokens.success;
     livePreviewButton.style.color = "#FFFFFF";
-  } else { // primary (default)
+  } else {
     livePreviewButton.style.background = themeTokens.actionPrimary;
-    livePreviewButton.style.color = themeTokens.textInverse; // always white on primary
+    livePreviewButton.style.color = themeTokens.textInverse;
   }
 
-  // State overrides
   if (finalSpec.computed.state === "hover") {
     if (finalSpec.computed.variant === "ghost") {
       livePreviewButton.style.background = "rgba(255,255,255,0.06)";
@@ -285,7 +273,6 @@ downloadJsonBtn.addEventListener("click", () => {
   }
 });
 
-// Start loading tokens then render
 loadTokens().then(() => {
   renderSpec();
   loadFigmaEmbed();

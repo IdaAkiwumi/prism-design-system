@@ -4,53 +4,53 @@
       "primary": {
         "$value": "{color-blue-500}",
         "$type": "color",
-        "$description": "Primary CTAs and interactive elements. Most important action on screen. Never use decoratively."
+        "$description": "Primary CTAs, interactive links, focused elements. **Use for:** submit buttons, confirm dialogs, primary navigation links, active tab indicators, “Save”, “Confirm”, “Next”. **Do NOT use for:** cards, badges, decorative icons, non‑interactive elements, or secondary actions. This token should appear at most once per major screen section."
       },
       "destructive": {
         "$value": "{color-red-500}",
         "$type": "color",
-        "$description": "Destructive or irreversible actions. Always pair with a confirmation dialog."
+        "$description": "Destructive or irreversible actions: delete, remove, revoke access, permanently discard. **Always** pair with a confirmation dialog that explains consequences. **Never** use for non‑destructive errors (use color-feedback-danger instead). Example text: “Delete account” – use destructive colour."
       }
     },
     "feedback": {
       "success": {
         "$value": "#00AA44",
         "$type": "color",
-        "$description": "Positive confirmations, completed states. Never decorative."
+        "$description": "Positive confirmations, completed tasks, successful form submissions. **Use for:** toast messages (“Saved”), success badges, progress completion states, “Success” banners. **Never** for decorative green or neutral positive feedback."
       },
       "warning": {
         "$value": "{color-amber-500}",
         "$type": "color",
-        "$description": "Cautionary states needing attention. Not errors."
+        "$description": "Cautionary states requiring attention but not errors. **Examples:** approaching storage limit, soon‑to‑expire subscription, low battery, “Are you sure?” prompts. **Do NOT** use for errors or destructive actions."
       },
       "danger": {
         "$value": "{color-red-500}",
         "$type": "color",
-        "$description": "Errors and critical alerts. Always pair with a non-color indicator for accessibility."
+        "$description": "Errors, failed validations, critical system alerts. **Always** pair with a non‑color indicator: an error icon (⚠️) and clear text explaining the issue. **Never** use for user‑initiated destructive actions (use color-action-destructive). Example: “Password incorrect”, “Network error”."
       }
     },
     "text": {
       "primary": {
         "$value": "{color-gray-900}",
         "$type": "color",
-        "$description": "Main body copy on light surfaces."
+        "$description": "Main body copy on light surfaces. **Use for:** paragraphs, list items, form labels, headings (except when inverse is required). **Minimum contrast 4.5:1** with background."
       },
       "inverse": {
         "$value": "{color-white}",
         "$type": "color",
-        "$description": "Text on dark or colored backgrounds only."
+        "$description": "Text on dark or coloured backgrounds. **Use for:** buttons with coloured backgrounds, dark mode surfaces, hero sections with dark overlays. **Never** use on light backgrounds (contrast will be too low)."
       }
     },
     "surface": {
       "default": {
         "$value": "{color-white}",
         "$type": "color",
-        "$description": "Primary page background."
+        "$description": "Primary page/background surface. **Use for:** overall app background, content areas, any component that sits directly without a container."
       },
       "raised": {
         "$value": "#F5F5F5",
         "$type": "color",
-        "$description": "Cards and floating elements above the default surface."
+        "$description": "Elevated surfaces: cards, modals, dialogs, dropdowns, tooltips. Provides visual hierarchy above default surface. Use for any component that should appear as a distinct container."
       }
     }
   }

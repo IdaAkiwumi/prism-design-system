@@ -6,8 +6,9 @@
   ],
   "motion": [
     "- ALL animated components MUST include:",
-    "- Use motion-duration-fast (200ms) for buttons and toggles",
-    "- Use motion-duration-moderate (300ms) for modals and drawers"
+    "- Use motion-duration-fast (200ms) for micro‑interactions: button hovers, toggle switches, badge appearance, tooltip entrance.",
+    "- Use motion-duration-moderate (300ms) for moderate changes: modal open/close, drawer slide, page transitions, accordion expand.",
+    "- **Do not** animate layout properties that trigger expensive reflows (width, height, top/left) – prefer transforms and opacity."
   ],
   "theme": [
     "- Apply themes via data-theme on the root element",
@@ -15,12 +16,14 @@
     "- Only override semantic tokens in theme files — never primitives"
   ],
   "accessibility": [
-    "- Text on any background: minimum 4.5:1 contrast ratio (WCAG AA)",
-    "- Focus states: always visible — never just outline: none"
+    "- Text on any background: minimum 4.5:1 contrast ratio (WCAG AA) for normal text; 3:1 for large text (≥18px or bold ≥14px).",
+    "- Focus states: always visible — never just outline: none. Use 2px solid `--color-action-primary` with 2px offset.",
+    "- All interactive controls must have an accessible name (aria-label or visible text)."
   ],
   "agentic": [
-    "- Intent preview: use card + badge components together",
+    "- Intent preview: use card + badge components together.",
     "- Confidence badge colors:",
-    "- Escalation flows MUST show a visible human handoff option"
+    "- Escalation flows MUST show a visible human handoff option (e.g., “Talk to a person” button) when confidence = low.",
+    "- For confidence = medium, offer both “Approve” and “Edit” actions. For low, also explain why confidence is low (“Uncertain due to missing data”)."
   ]
 }
