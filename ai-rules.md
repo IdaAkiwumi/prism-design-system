@@ -84,8 +84,9 @@ Load into Cursor, Copilot, or any MCP-compatible AI agent.
 | --color-action-primary | #E50914 |
 | --color-surface-default | #0A0A0A |
 | --color-text-primary | #FFFFFF |
-| --color-surface-raised | #1A1A1A |
+| --color-surface-raised | #2C2C2C |   <!-- was #1A1A1A, now lighter -->
 | --border-radius-default | 0px |
+| --card-border | 1px solid rgba(255,255,255,0.08) |   <!-- new token -->
 
 ## Theme: EDUCATION
 | Token | Value |
@@ -137,6 +138,7 @@ When generating any design system output:
 - For modals, use `--color-surface-raised` for background and `--color-action-primary` for confirm button.
 - Always include a `@media (prefers-reduced-motion: reduce)` wrapper around any transition or animation.
 - For agentic intent preview cards: structure = card container + confidence badge (matching colour token) + action buttons. Confidence label must be visible text, not just colour.
+- For dark themes (Entertainment), cards should use a subtle light border: `border: var(--card-border, none)` to improve separation.
 
 ## Nested cards (cards inside cards)
 - A card that appears as a direct child of another card MUST use `background: var(--color-surface-default)` instead of `var(--color-surface-raised)`.
