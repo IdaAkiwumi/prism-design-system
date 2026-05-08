@@ -3,45 +3,54 @@
     "action": {
       "primary": {
         "$value": "{color-blue-500}",
-        "$type": "color"
+        "$type": "color",
+        "$description": "Primary CTAs and interactive elements. Most important action on screen. Never use decoratively."
       },
       "destructive": {
         "$value": "{color-red-500}",
-        "$type": "color"
+        "$type": "color",
+        "$description": "Destructive or irreversible actions. Always pair with a confirmation dialog."
       }
     },
     "feedback": {
+      "success": {
+        "$value": "#00AA44",
+        "$type": "color",
+        "$description": "Positive confirmations, completed states. Never decorative."
+      },
       "warning": {
         "$value": "{color-amber-500}",
-        "$type": "color"
+        "$type": "color",
+        "$description": "Cautionary states needing attention. Not errors."
       },
       "danger": {
         "$value": "{color-red-500}",
-        "$type": "color"
-      },
-      "success": {
-        "$value": "#00AA44",
-        "$type": "color"
+        "$type": "color",
+        "$description": "Errors and critical alerts. Always pair with a non-color indicator for accessibility."
       }
     },
     "text": {
       "primary": {
         "$value": "{color-gray-900}",
-        "$type": "color"
+        "$type": "color",
+        "$description": "Main body copy on light surfaces."
       },
       "inverse": {
         "$value": "{color-white}",
-        "$type": "color"
+        "$type": "color",
+        "$description": "Text on dark or colored backgrounds only."
       }
     },
     "surface": {
       "default": {
         "$value": "{color-white}",
-        "$type": "color"
+        "$type": "color",
+        "$description": "Primary page background."
       },
       "raised": {
         "$value": "#F5F5F5",
-        "$type": "color"
+        "$type": "color",
+        "$description": "Cards and floating elements above the default surface."
       }
     }
   }

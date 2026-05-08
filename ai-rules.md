@@ -47,15 +47,15 @@ Load into Cursor, Copilot, or any MCP-compatible AI agent.
 - color-black: #0A0A0A
 
 ## Semantic Tokens (Intent Layer)
-- color-action-primary → color-blue-500
-- color-action-destructive → color-red-500
-- color-feedback-success → #00AA44
-- color-feedback-warning → color-amber-500
-- color-feedback-danger → color-red-500
-- color-text-primary → color-gray-900
-- color-text-inverse → color-white
-- color-surface-default → color-white
-- color-surface-raised → #F5F5F5
+- color-action-primary → color-blue-500 | Primary CTAs and interactive elements. Most important action on screen. Never use decoratively.
+- color-action-destructive → color-red-500 | Destructive or irreversible actions. Always pair with a confirmation dialog.
+- color-feedback-success → #00AA44 | Positive confirmations, completed states. Never decorative.
+- color-feedback-warning → color-amber-500 | Cautionary states needing attention. Not errors.
+- color-feedback-danger → color-red-500 | Errors and critical alerts. Always pair with a non-color indicator for accessibility.
+- color-text-primary → color-gray-900 | Main body copy on light surfaces.
+- color-text-inverse → color-white | Text on dark or colored backgrounds only.
+- color-surface-default → color-white | Primary page background.
+- color-surface-raised → #F5F5F5 | Cards and floating elements above the default surface.
 
 ## Theme: BASE (default)
 | Token | Value |

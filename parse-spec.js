@@ -48,23 +48,27 @@ function extractPrimitives(markdown) {
 function extractSemantic(markdown) {
   const semantic = { color: {} };
   
-  const semanticRegex = /- (color-[a-z]+-[a-z]+) → ([a-z0-9-]+)/gi;
+  // Match lines like: - color-action-primary → color-blue-500 | description text
+  // The description is optional (after |)
+  const semanticRegex = /- (color-[a-z]+-[a-z]+) → ([a-z0-9#-]+)(?:\s*\|\s*(.*))?/gi;
   let match;
   while ((match = semanticRegex.exec(markdown)) !== null) {
     const parts = match[1].split('-');
-    const category = parts[1];
-    const token = parts[2];
+    const category = parts[1]; // action, feedback, text, surface
+    const token = parts[2];     // primary, destructive, success, etc.
+    const value = match[2];
+    const description = match[3] ? match[3].trim() : "";
+    
     if (!semantic.color[category]) semantic.color[category] = {};
-    semantic.color[category][token] = { $value: `{${match[2]}}`, $type: 'color' };
-  }
-  
-  const hexSemanticRegex = /- (color-[a-z]+-[a-z]+) → (#[A-F0-9]{6})/gi;
-  while ((match = hexSemanticRegex.exec(markdown)) !== null) {
-    const parts = match[1].split('-');
-    const category = parts[1];
-    const token = parts[2];
-    if (!semantic.color[category]) semantic.color[category] = {};
-    semantic.color[category][token] = { $value: match[2], $type: 'color' };
+    
+    const tokenObj = {
+      $value: value.startsWith('#') ? value : `{${value}}`,
+      $type: "color"
+    };
+    if (description) {
+      tokenObj.$description = description;
+    }
+    semantic.color[category][token] = tokenObj;
   }
   
   return semantic;
@@ -180,17 +184,17 @@ function generateCSSVariables(themes) {
 // ============================================
 // RUN EVERYTHING
 // ============================================
-console.log('📝 Extracting primitives... - parse-spec.js:183');
+console.log('📝 Extracting primitives... - parse-spec.js:187');
 const primitives = extractPrimitives(markdown);
-console.log('📝 Extracting semantic tokens... - parse-spec.js:185');
+console.log('📝 Extracting semantic tokens... - parse-spec.js:189');
 const semantic = extractSemantic(markdown);
-console.log('📝 Extracting themes... - parse-spec.js:187');
+console.log('📝 Extracting themes... - parse-spec.js:191');
 const themes = extractThemes(markdown);
-console.log('📝 Extracting component contracts... - parse-spec.js:189');
+console.log('📝 Extracting component contracts... - parse-spec.js:193');
 const components = extractComponents(markdown);
-console.log('📝 Extracting AI rules... - parse-spec.js:191');
+console.log('📝 Extracting AI rules... - parse-spec.js:195');
 const aiRules = extractAIRules(markdown);
-console.log('📝 Generating CSS variables... - parse-spec.js:193');
+console.log('📝 Generating CSS variables... - parse-spec.js:197');
 const cssVariables = generateCSSVariables(themes);
 
 // Create directories: tokens/ and generated/
@@ -202,28 +206,28 @@ dirs.forEach(dir => {
 });
 
 fs.writeFileSync('tokens/primitives.json', JSON.stringify(primitives, null, 2));
-console.log('✅ Written: tokens/primitives.json - parse-spec.js:205');
+console.log('✅ Written: tokens/primitives.json - parse-spec.js:209');
 
 fs.writeFileSync('tokens/semantic.json', JSON.stringify(semantic, null, 2));
-console.log('✅ Written: tokens/semantic.json - parse-spec.js:208');
+console.log('✅ Written: tokens/semantic.json - parse-spec.js:212');
 
 Object.entries(themes).forEach(([themeName, themeValues]) => {
   fs.writeFileSync(`tokens/themes/${themeName}.json`, JSON.stringify(themeValues, null, 2));
-  console.log(`✅ Written: tokens/themes/${themeName}.json - parse-spec.js:212`);
+  console.log(`✅ Written: tokens/themes/${themeName}.json - parse-spec.js:216`);
 });
 
 if (Object.keys(components).length > 0) {
   fs.writeFileSync('generated/components.json', JSON.stringify(components, null, 2));
-  console.log('✅ Written: generated/components.json - parse-spec.js:217');
+  console.log('✅ Written: generated/components.json - parse-spec.js:221');
 } else {
-  console.log('ℹ️ No component contracts found  skipping components.json - parse-spec.js:219');
+  console.log('ℹ️ No component contracts found  skipping components.json - parse-spec.js:223');
 }
 
 fs.writeFileSync('generated/ai-rules.json', JSON.stringify(aiRules, null, 2));
-console.log('✅ Written: generated/airules.json - parse-spec.js:223');
+console.log('✅ Written: generated/airules.json - parse-spec.js:227');
 
 fs.writeFileSync('generated/prism-variables.css', cssVariables);
-console.log('✅ Written: generated/prismvariables.css - parse-spec.js:226');
+console.log('✅ Written: generated/prismvariables.css - parse-spec.js:230');
 
 const summary = {
   generatedAt: new Date().toISOString(),
@@ -244,12 +248,12 @@ const summary = {
 };
 
 fs.writeFileSync('generated/spec-summary.json', JSON.stringify(summary, null, 2));
-console.log('✅ Written: generated/specsummary.json - parse-spec.js:247');
+console.log('✅ Written: generated/specsummary.json - parse-spec.js:251');
 
-console.log('\n🎉 DONE! All files generated from airules.md - parse-spec.js:249');
-console.log(`\n📊 Summary: - parse-spec.js:250`);
-console.log(`${summary.stats.primitiveColors} primitive colors - parse-spec.js:251`);
-console.log(`${summary.stats.semanticTokens} semantic tokens - parse-spec.js:252`);
-console.log(`${summary.stats.themes.length} themes: ${summary.stats.themes.join(', ')} - parse-spec.js:253`);
-console.log(`${summary.stats.aiRules.token} token rules, ${summary.stats.aiRules.motion} motion rules - parse-spec.js:254`);
-console.log('\n🚀 Run `npm run sync` anytime you update airules.md - parse-spec.js:255');
+console.log('\n🎉 DONE! All files generated from airules.md - parse-spec.js:253');
+console.log(`\n📊 Summary: - parse-spec.js:254`);
+console.log(`${summary.stats.primitiveColors} primitive colors - parse-spec.js:255`);
+console.log(`${summary.stats.semanticTokens} semantic tokens - parse-spec.js:256`);
+console.log(`${summary.stats.themes.length} themes: ${summary.stats.themes.join(', ')} - parse-spec.js:257`);
+console.log(`${summary.stats.aiRules.token} token rules, ${summary.stats.aiRules.motion} motion rules - parse-spec.js:258`);
+console.log('\n🚀 Run `npm run sync` anytime you update airules.md - parse-spec.js:259');
