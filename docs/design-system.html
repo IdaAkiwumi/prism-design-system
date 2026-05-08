@@ -2,46 +2,49 @@
 <html lang="en" data-theme="base">
 <head>
   <meta charset="UTF-8" />
-  <title>PRISM Design System</title>
+  <title>PRISM Design System – Demo</title>
   <style>
     :root {
-      /* BASE THEME (default) — semantic tokens */
+      /* Base theme (default) – semantic layer */
       --color-action-primary: #0066CC;
       --color-surface-default: #FFFFFF;
       --color-surface-raised: #F5F5F5;
       --color-text-primary: #111111;
       --color-text-inverse: #FFFFFF;
 
-      /* Feedback tokens (from spec) */
+      /* Feedback semantic tokens */
       --color-feedback-success: #00AA44;
       --color-feedback-warning: #F4A300;
       --color-feedback-danger: #E50914;
 
-      /* Derived tokens */
-      --color-border-subtle: rgba(0, 0, 0, 0.08);
-      --shadow-raised: 0 2px 8px rgba(0, 0, 0, 0.08);
-
       /* Motion tokens */
       --motion-duration-fast: 200ms;
       --motion-duration-moderate: 300ms;
-
-      /* Component-specific semantic tokens */
-      /* Button background: var(--color-action-primary) */
-      /* Button text: var(--color-text-primary) on light themes, var(--color-text-inverse) on dark themes */
-      --color-button-text: var(--color-text-primary);
-      --color-page-background: var(--color-surface-default);
-      --color-card-background: var(--color-surface-raised);
-      --color-input-background: var(--color-surface-default);
-      --color-input-border: var(--color-border-subtle);
-      --color-tab-active: var(--color-action-primary);
-      --color-tab-inactive: rgba(0, 0, 0, 0.12);
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        transition: none !important;
-        animation: none !important;
-      }
+    /* Theme-specific overrides via data-theme (JS will also set inline vars) */
+    html[data-theme="base"] {
+      --color-action-primary: #0066CC;
+      --color-surface-default: #FFFFFF;
+      --color-surface-raised: #F5F5F5;
+      --color-text-primary: #111111;
+      --color-text-inverse: #FFFFFF;
+    }
+
+    html[data-theme="entertainment"] {
+      --color-action-primary: #E50914;
+      --color-surface-default: #0A0A0A;
+      --color-surface-raised: #1A1A1A;
+      --color-text-primary: #FFFFFF;
+      --color-text-inverse: #FFFFFF;
+    }
+
+    html[data-theme="education"] {
+      --color-action-primary: #F4A300;
+      --color-surface-default: #FFFBF2;
+      --color-surface-raised: #F5F5F5;
+      --color-text-primary: #111111;
+      --color-text-inverse: #FFFFFF;
     }
 
     * {
@@ -51,11 +54,17 @@
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--color-page-background);
+      background: var(--color-surface-default);
       color: var(--color-text-primary);
-      line-height: 1.5;
       transition: background-color var(--motion-duration-moderate) ease,
                   color var(--motion-duration-moderate) ease;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        animation: none !important;
+      }
     }
 
     .app-shell {
@@ -66,59 +75,45 @@
 
     header {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 1.6rem;
-    }
-
-    header p {
-      margin: 0;
-      opacity: 0.8;
-      max-width: 640px;
-    }
-
-    .top-bar {
-      display: flex;
       flex-wrap: wrap;
-      gap: 12px;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .title-block p {
+      margin: 4px 0 0;
+      font-size: 0.9rem;
+      opacity: 0.8;
     }
 
     .theme-switcher {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .theme-switcher label {
       font-size: 0.9rem;
     }
 
-    .theme-switcher select {
+    select {
       padding: 6px 10px;
       border-radius: 6px;
-      border: 1px solid var(--color-input-border);
-      background: var(--color-input-background);
+      border: 1px solid rgba(0,0,0,0.12);
+      background: var(--color-surface-raised);
       color: var(--color-text-primary);
-      min-width: 160px;
-      transition: border-color var(--motion-duration-fast) ease,
-                  background-color var(--motion-duration-fast) ease,
-                  color var(--motion-duration-fast) ease;
     }
-
-    .theme-switcher select:focus-visible {
-      outline: 2px solid var(--color-action-primary);
-      outline-offset: 2px;
-    }
-
-    /* Tabs */
 
     .tabs {
       display: flex;
-      border-bottom: 1px solid var(--color-border-subtle);
+      border-bottom: 1px solid rgba(0,0,0,0.12);
       margin-bottom: 16px;
       gap: 4px;
       flex-wrap: wrap;
@@ -128,145 +123,148 @@
       border: none;
       background: transparent;
       padding: 8px 14px;
-      border-radius: 999px;
       cursor: pointer;
+      border-radius: 6px 6px 0 0;
       font-size: 0.9rem;
       color: var(--color-text-primary);
-      position: relative;
-      transition: background-color var(--motion-duration-fast) ease,
-                  color var(--motion-duration-fast) ease,
-                  transform var(--motion-duration-fast) ease;
+      opacity: 0.7;
     }
 
     .tab-button[aria-selected="true"] {
-      background: var(--color-tab-active);
-      color: var(--color-text-inverse);
-    }
-
-    .tab-button[aria-selected="false"]:hover {
-      background: var(--color-tab-inactive);
-    }
-
-    .tab-button:focus-visible {
-      outline: 2px solid var(--color-action-primary);
-      outline-offset: 2px;
-    }
-
-    .tab-panels {
-      margin-top: 8px;
+      background: var(--color-surface-raised);
+      opacity: 1;
+      font-weight: 600;
+      border-bottom: 2px solid var(--color-action-primary);
     }
 
     .tab-panel {
       display: none;
+      padding: 16px 0 0;
     }
 
-    .tab-panel[aria-hidden="false"] {
+    .tab-panel.active {
       display: block;
     }
 
-    /* Cards */
-
-    .card {
-      background: var(--color-card-background);
-      border-radius: 12px;
-      padding: 16px 18px;
-      box-shadow: var(--shadow-raised);
-      border: 1px solid var(--color-border-subtle);
-      margin-bottom: 16px;
-      transition: background-color var(--motion-duration-moderate) ease,
-                  box-shadow var(--motion-duration-moderate) ease,
-                  border-color var(--motion-duration-moderate) ease;
+    .section-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
     }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
+    .section-grid.single {
+      grid-template-columns: minmax(0, 1fr);
     }
 
-    .card-title {
-      font-weight: 600;
+    .panel {
+      background: var(--color-surface-raised);
+      border-radius: 10px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+
+    .panel h3 {
+      margin: 0 0 8px;
       font-size: 1rem;
     }
 
-    .card-meta {
-      font-size: 0.8rem;
-      opacity: 0.7;
-    }
-
-    .card-body {
+    .panel h4 {
+      margin: 12px 0 6px;
       font-size: 0.9rem;
     }
 
-    .card-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr);
-      gap: 16px;
+    code, pre {
+      font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.8rem;
     }
 
-    @media (max-width: 768px) {
-      .card-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
+    pre {
+      margin: 0;
+      padding: 10px 12px;
+      background: #11111110;
+      border-radius: 8px;
+      overflow-x: auto;
     }
 
-    /* Buttons (Components) */
+    .token-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
 
-    .button-row {
+    .token-table th,
+    .token-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      text-align: left;
+    }
+
+    .token-swatch {
+      width: 32px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0,0.12);
+    }
+
+    /* Components */
+
+    .component-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 12px;
       align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .component-label {
+      width: 80px;
+      font-size: 0.85rem;
+      opacity: 0.8;
     }
 
     .btn {
       font-size: 0.9rem;
+      padding: 8px 14px;
       border-radius: 999px;
-      padding: 8px 16px;
       border: 1px solid transparent;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 6px;
       transition: background-color var(--motion-duration-fast) ease,
                   color var(--motion-duration-fast) ease,
                   border-color var(--motion-duration-fast) ease,
-                  transform var(--motion-duration-fast) ease,
-                  box-shadow var(--motion-duration-fast) ease;
+                  box-shadow var(--motion-duration-fast) ease,
+                  transform var(--motion-duration-fast) ease;
     }
 
     .btn-primary {
-      background: var(--color-action-primary); /* Button background: var(--color-action-primary) */
-      color: var(--color-button-text);        /* Button text: semantic token */
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+      background: var(--color-action-primary); /* semantic: color-action-primary */
+      color: var(--color-text-inverse);        /* semantic: color-text-inverse */
+      box-shadow: 0 2px 4px rgba(0,0,0,0.18);
     }
 
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.22);
+    /* Education theme exception: light amber background, dark text */
+    [data-theme="education"] .btn-primary {
+      color: #111111;
     }
 
     .btn-secondary {
-      background: transparent;
-      color: var(--color-text-primary);
+      background: var(--color-surface-default);
+      color: var(--color-action-primary);
       border-color: var(--color-action-primary);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(0, 0, 0, 0.04);
     }
 
     .btn-ghost {
       background: transparent;
-      color: var(--color-text-primary);
+      color: var(--color-action-primary);
       border-color: transparent;
     }
 
-    .btn-ghost:hover {
-      background: rgba(0, 0, 0, 0.06);
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.18);
     }
 
     .btn:focus-visible {
@@ -274,54 +272,59 @@
       outline-offset: 2px;
     }
 
-    /* Inputs */
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+    }
 
-    .field {
+    .card {
+      background: var(--color-surface-raised);
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .card-header {
       display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-bottom: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
     }
 
-    .field label {
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .card-body {
       font-size: 0.85rem;
-      font-weight: 500;
+      opacity: 0.9;
     }
 
-    .field input {
+    .input {
       padding: 8px 10px;
       border-radius: 8px;
-      border: 1px solid var(--color-input-border);
-      background: var(--color-input-background);
+      border: 1px solid rgba(0,0,0,0.18);
+      background: var(--color-surface-default);
       color: var(--color-text-primary);
       font-size: 0.9rem;
+      width: 100%;
+      max-width: 260px;
       transition: border-color var(--motion-duration-fast) ease,
-                  box-shadow var(--motion-duration-fast) ease,
-                  background-color var(--motion-duration-fast) ease,
-                  color var(--motion-duration-fast) ease;
+                  box-shadow var(--motion-duration-fast) ease;
     }
 
-    .field input:focus-visible {
-      outline: 2px solid var(--color-action-primary);
-      outline-offset: 1px;
+    .input:focus-visible {
+      outline: none;
       border-color: var(--color-action-primary);
-      box-shadow: 0 0 0 1px var(--color-action-primary);
-    }
-
-    /* Badges */
-
-    .badge-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-action-primary) 30%, transparent);
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      padding: 3px 10px;
+      padding: 2px 8px;
       border-radius: 999px;
       font-size: 0.75rem;
       font-weight: 500;
@@ -329,8 +332,9 @@
     }
 
     .badge-neutral {
-      background: rgba(0, 0, 0, 0.06);
+      background: var(--color-surface-default);
       color: var(--color-text-primary);
+      border-color: rgba(0,0,0,0.12);
     }
 
     .badge-success {
@@ -348,737 +352,527 @@
       color: var(--color-text-inverse);
     }
 
-    /* Code blocks */
-
-    pre {
-      margin: 0;
-      padding: 10px 12px;
-      border-radius: 8px;
-      background: rgba(0, 0, 0, 0.06);
-      font-size: 0.8rem;
-      overflow-x: auto;
+    .intent-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    }
-
-    .token-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-
-    .token-table th,
-    .token-table td {
-      padding: 6px 8px;
-      border-bottom: 1px solid var(--color-border-subtle);
-      text-align: left;
-    }
-
-    .token-table th {
-      font-weight: 600;
-    }
-
-    .token-pill {
-      display: inline-flex;
+    .intent-footer {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 6px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.04);
-      font-size: 0.75rem;
-    }
-
-    .token-swatch {
-      width: 14px;
-      height: 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(0, 0, 0, 0.12);
-      background: currentColor;
-    }
-
-    .layout-two {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.2fr);
-      gap: 16px;
-    }
-
-    @media (max-width: 768px) {
-      .layout-two {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .section-title {
-      font-weight: 600;
-      margin-bottom: 6px;
-      font-size: 0.95rem;
-    }
-
-    .muted {
+      margin-top: 8px;
       font-size: 0.8rem;
-      opacity: 0.75;
+      opacity: 0.9;
     }
 
-    /* Themes tab special buttons (hardcoded hex backgrounds) */
+    .human-handoff {
+      font-size: 0.8rem;
+      text-decoration: underline;
+      cursor: pointer;
+      color: var(--color-action-primary);
+    }
 
-    .theme-demo-row {
+    .themes-row {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
       margin-top: 8px;
-      margin-bottom: 8px;
     }
 
-    .theme-demo-btn {
+    .theme-chip {
+      padding: 8px 12px;
       border-radius: 999px;
-      padding: 10px 18px;
-      border: none;
-      cursor: default;
-      color: #FFFFFF;
-      font-size: 0.9rem;
-      font-weight: 500;
+      border: 1px solid rgba(0,0,0,0.18);
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--color-surface-default);
     }
 
-    .theme-demo-btn-base {
-      background-color: #0066CC;
-    }
-
-    .theme-demo-btn-entertainment {
-      background-color: #E50914;
-    }
-
-    .theme-demo-btn-education {
-      background-color: #F4A300;
-      color: #111111;
-    }
-
-    .theme-demo-btn:focus-visible {
-      outline: 2px solid #FFFFFF;
-      outline-offset: 2px;
-    }
-
-    /* AI Rules list */
-
-    .rules-list {
+    .theme-chip strong {
       font-size: 0.9rem;
     }
 
-    .rules-list h3 {
-      margin-top: 12px;
-      margin-bottom: 4px;
-      font-size: 1rem;
+    .theme-swatch {
+      width: 32px;
+      height: 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.18);
     }
 
-    .rules-list ul {
-      margin: 4px 0 8px 18px;
-      padding: 0;
-    }
-
-    .rules-list li {
-      margin-bottom: 2px;
-    }
-
-    .badge-inline {
+    .pill {
       display: inline-flex;
       align-items: center;
       padding: 2px 8px;
       border-radius: 999px;
       font-size: 0.7rem;
-      margin-left: 6px;
-      background: rgba(0, 0, 0, 0.06);
+      background: var(--color-surface-default);
+      border: 1px solid rgba(0,0,0,0.12);
+      gap: 4px;
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--color-action-primary);
+    }
+
+    .ai-rules-list {
+      font-size: 0.9rem;
+      padding-left: 18px;
+    }
+
+    .ai-rules-list li {
+      margin-bottom: 4px;
+    }
+
+    .mono {
+      font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    .small {
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stack-tight {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .muted {
+      opacity: 0.7;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .code-caption {
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
   <div class="app-shell">
     <header>
-      <h1>PRISM Design System</h1>
-      <p>
-        A token-driven, themeable UI surface for AI agents. Tabs below expose tokens, components,
-        themes, and AI-specific rules while a global theme switcher updates every component instantly.
-      </p>
-      <div class="top-bar">
-        <div class="theme-switcher">
-          <label for="themeSelect"><strong>Theme:</strong></label>
-          <select id="themeSelect" aria-label="Select theme for entire page">
-            <option value="base">Base</option>
-            <option value="entertainment">Entertainment</option>
-            <option value="education">Education</option>
-          </select>
-        </div>
-        <div class="badge-row">
-          <span class="badge badge-neutral">Agentic UI</span>
-          <span class="badge badge-success">Semantic tokens</span>
-          <span class="badge badge-warning">Theme-aware</span>
-        </div>
+      <div class="title-block">
+        <h1>PRISM Design System</h1>
+        <p>Tokens, components, and AI patterns with live theme switching.</p>
+      </div>
+      <div class="theme-switcher" aria-label="Theme switcher">
+        <label for="themeSelect">Theme</label>
+        <select id="themeSelect">
+          <option value="base">Base</option>
+          <option value="entertainment">Entertainment</option>
+          <option value="education">Education</option>
+        </select>
       </div>
     </header>
 
     <nav class="tabs" role="tablist" aria-label="PRISM sections">
-      <button class="tab-button" role="tab" aria-selected="true" aria-controls="panel-tokens" id="tab-tokens">
-        Tokens
-      </button>
-      <button class="tab-button" role="tab" aria-selected="false" aria-controls="panel-components" id="tab-components">
-        Components
-      </button>
-      <button class="tab-button" role="tab" aria-selected="false" aria-controls="panel-themes" id="tab-themes">
-        Themes
-      </button>
-      <button class="tab-button" role="tab" aria-selected="false" aria-controls="panel-rules" id="tab-rules">
-        AI Rules
-      </button>
+      <button class="tab-button" role="tab" aria-selected="true" aria-controls="tab-tokens" id="tab-tokens-btn">Tokens</button>
+      <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-components" id="tab-components-btn">Components</button>
+      <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-themes" id="tab-themes-btn">Themes</button>
+      <button class="tab-button" role="tab" aria-selected="false" aria-controls="tab-ai-rules" id="tab-ai-rules-btn">AI Rules</button>
     </nav>
 
-    <main class="tab-panels">
-      <!-- TOKENS TAB -->
-      <section class="tab-panel" id="panel-tokens" role="tabpanel" aria-labelledby="tab-tokens" aria-hidden="false">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Semantic tokens</div>
-            <div class="card-meta">Mapped to exact theme values</div>
+    <!-- TOKENS TAB -->
+    <section class="tab-panel active" id="tab-tokens" role="tabpanel" aria-labelledby="tab-tokens-btn">
+      <div class="section-grid">
+        <div class="panel">
+          <h3>Semantic tokens</h3>
+          <p class="small muted">Always use semantic tokens in components, never raw primitives.</p>
+          <table class="token-table" aria-label="Semantic tokens">
+            <thead>
+              <tr>
+                <th>Token</th>
+                <th>Current value</th>
+                <th>Swatch</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>--color-action-primary</code></td>
+                <td class="mono">varies by theme</td>
+                <td><div class="token-swatch" id="swatch-action-primary"></div></td>
+              </tr>
+              <tr>
+                <td><code>--color-surface-default</code></td>
+                <td class="mono">varies by theme</td>
+                <td><div class="token-swatch" id="swatch-surface-default"></div></td>
+              </tr>
+              <tr>
+                <td><code>--color-surface-raised</code></td>
+                <td class="mono">varies by theme</td>
+                <td><div class="token-swatch" id="swatch-surface-raised"></div></td>
+              </tr>
+              <tr>
+                <td><code>--color-text-primary</code></td>
+                <td class="mono">varies by theme</td>
+                <td><div class="token-swatch" id="swatch-text-primary"></div></td>
+              </tr>
+              <tr>
+                <td><code>--color-text-inverse</code></td>
+                <td class="mono">varies by theme</td>
+                <td><div class="token-swatch" id="swatch-text-inverse"></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <h3>Theme token maps</h3>
+          <div class="stack-tight small">
+            <strong>Base</strong>
+            <div class="theme-chip">
+              <span class="theme-swatch" style="background:#0066CC;"></span>
+              <span class="mono">--color-action-primary: #0066CC</span>
+            </div>
+            <strong>Entertainment</strong>
+            <div class="theme-chip">
+              <span class="theme-swatch" style="background:#E50914;"></span>
+              <span class="mono">--color-action-primary: #E50914</span>
+            </div>
+            <strong>Education</strong>
+            <div class="theme-chip">
+              <span class="theme-swatch" style="background:#F4A300;"></span>
+              <span class="mono">--color-action-primary: #F4A300</span>
+            </div>
           </div>
-          <div class="card-body">
-            <div class="card-grid">
-              <div>
-                <div class="section-title">Core semantic tokens</div>
-                <table class="token-table" aria-label="Core semantic tokens">
-                  <thead>
-                    <tr>
-                      <th>Token</th>
-                      <th>Intent</th>
-                      <th>Example usage</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>--color-action-primary</code></td>
-                      <td>Primary interactive color</td>
-                      <td>Button background, active tab</td>
-                    </tr>
-                    <tr>
-                      <td><code>--color-surface-default</code></td>
-                      <td>Page background</td>
-                      <td>Body background</td>
-                    </tr>
-                    <tr>
-                      <td><code>--color-surface-raised</code></td>
-                      <td>Raised surfaces</td>
-                      <td>Cards, panels</td>
-                    </tr>
-                    <tr>
-                      <td><code>--color-text-primary</code></td>
-                      <td>Primary text</td>
-                      <td>Body copy, labels</td>
-                    </tr>
-                    <tr>
-                      <td><code>--color-text-inverse</code></td>
-                      <td>Inverse text</td>
-                      <td>On dark or accent surfaces</td>
-                    </tr>
-                    <tr>
-                      <td><code>--color-feedback-success</code></td>
-                      <td>Positive feedback</td>
-                      <td>Success badges</td>
-                    </tr>
-                    <tr>
-                      <td><code>--color-feedback-warning</code></td>
-                      <td>Cautionary feedback</td>
-                      <td>Warning badges</td>
-                    </tr>
-                    <tr>
-                      <td><code>--color-feedback-danger</code></td>
-                      <td>Destructive / error</td>
-                      <td>Danger badges</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div>
-                <div class="section-title">Token mapping by theme</div>
-                <p class="muted">
-                  All themes redefine the same semantic tokens; components never fork. JavaScript updates
-                  the CSS variables when the theme changes.
-                </p>
-                <pre><code>/* BASE THEME (default) */
-:root {
-  --color-action-primary: #0066CC;
+          <h4>CSS variable definition</h4>
+          <p class="code-caption">Variables are always defined as <code>--token-name: value;</code> and updated on theme change.</p>
+          <pre><code>:root {
+  --color-action-primary: #0066CC; /* base */
   --color-surface-default: #FFFFFF;
   --color-text-primary: #111111;
   --color-surface-raised: #F5F5F5;
-}
-
-/* JS applies these when data-theme="entertainment" */
-// --color-action-primary: #E50914;
-// --color-surface-default: #0A0A0A;
-// --color-text-primary: #FFFFFF;
-// --color-surface-raised: #1A1A1A;
-
-/* JS applies these when data-theme="education" */
-// --color-action-primary: #F4A300;
-// --color-surface-default: #FFFBF2;
-// --color-text-primary: #111111;
-// --color-surface-raised: #F5F5F5;</code></pre>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Motion & accessibility tokens</div>
-            <div class="card-meta">WCAG AA contrast and reduced motion support</div>
-          </div>
-          <div class="card-body layout-two">
-            <div>
-              <div class="section-title">Motion</div>
-              <ul class="muted">
-                <li><code>--motion-duration-fast</code> → used for buttons and toggles (200ms).</li>
-                <li><code>--motion-duration-moderate</code> → used for modals, drawers, and page transitions (300ms).</li>
-                <li>
-                  All animated components include
-                  <code>@media (prefers-reduced-motion: reduce) { transition: none; }</code>.
-                </li>
-              </ul>
-            </div>
-            <div>
-              <div class="section-title">Accessibility</div>
-              <ul class="muted">
-                <li>Text on any background targets at least a 4.5:1 contrast ratio (WCAG AA).</li>
-                <li>Focus states are always visible and never rely on <code>outline: none</code>.</li>
-                <li>Theme switching preserves contrast by redefining semantic tokens, not component styles.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- COMPONENTS TAB -->
-      <section class="tab-panel" id="panel-components" role="tabpanel" aria-labelledby="tab-components" aria-hidden="true">
-        <!-- Buttons -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Button</div>
-            <div class="card-meta">Variants: primary, secondary, ghost</div>
-          </div>
-          <div class="card-body card-grid">
-            <div>
-              <div class="section-title">Visual preview</div>
-              <div class="button-row" aria-label="Button variants preview">
-                <button class="btn btn-primary">Primary</button>
-                <button class="btn btn-secondary">Secondary</button>
-                <button class="btn btn-ghost">Ghost</button>
-              </div>
-              <p class="muted" style="margin-top: 8px;">
-                All buttons use semantic tokens and update instantly when the theme changes.
-              </p>
-            </div>
-            <div>
-              <div class="section-title">Code & token mapping</div>
-              <pre><code>&lt;button class="btn btn-primary"&gt;Primary&lt;/button&gt;
-
-.btn-primary {
-  /* Button background: var(--color-action-primary) */
-  background: var(--color-action-primary);
-  /* Button text: var(--color-button-text) */
-  color: var(--color-button-text);
-}
-
-.btn-secondary {
-  background: transparent;
-  color: var(--color-text-primary);
-  border-color: var(--color-action-primary);
-}
-
-.btn-ghost {
-  background: transparent;
-  color: var(--color-text-primary);
-  border-color: transparent;
+  --color-text-inverse: #FFFFFF;
 }</code></pre>
-              <p class="muted" style="margin-top: 6px;">
-                <span class="token-pill">
-                  <span class="token-swatch" style="color: var(--color-action-primary);"></span>
-                  <span>--color-action-primary</span>
-                </span>
-                <span class="token-pill">
-                  <span class="token-swatch" style="color: var(--color-text-primary);"></span>
-                  <span>--color-text-primary</span>
-                </span>
-                <span class="token-pill">
-                  <span class="token-swatch" style="color: var(--color-text-inverse);"></span>
-                  <span>--color-text-inverse</span>
-                </span>
-              </p>
-            </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPONENTS TAB -->
+    <section class="tab-panel" id="tab-components" role="tabpanel" aria-labelledby="tab-components-btn">
+      <div class="section-grid">
+        <div class="panel">
+          <h3>Buttons</h3>
+          <p class="small muted">Primary buttons always use <code>var(--color-action-primary)</code> for background.</p>
+
+          <div class="component-row">
+            <div class="component-label">Primary</div>
+            <button class="btn btn-primary">Primary</button>
           </div>
+          <div class="component-row">
+            <div class="component-label">Secondary</div>
+            <button class="btn btn-secondary">Secondary</button>
+          </div>
+          <div class="component-row">
+            <div class="component-label">Ghost</div>
+            <button class="btn btn-ghost">Ghost</button>
+          </div>
+
+          <h4>Token mapping</h4>
+          <ul class="small">
+            <li><code>.btn-primary</code> → <code>background: var(--color-action-primary);</code></li>
+            <li><code>.btn-primary</code> → <code>color: var(--color-text-inverse);</code> (Base &amp; Entertainment)</li>
+            <li><code>[data-theme="education"] .btn-primary</code> → <code>color: #111111;</code></li>
+          </ul>
         </div>
 
-        <!-- Card -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Card</div>
-            <div class="card-meta">Raised surface with semantic background</div>
-          </div>
-          <div class="card-body card-grid">
-            <div>
-              <div class="section-title">Visual preview</div>
-              <div class="card" style="margin-bottom: 0;">
-                <div class="card-header">
-                  <div class="card-title">Example card</div>
-                  <span class="badge badge-neutral">Surface</span>
+        <div class="panel">
+          <h3>Button code</h3>
+          <pre><code>.btn-primary {
+  background: var(--color-action-primary); /* semantic: action primary */
+  color: var(--color-text-inverse);       /* semantic: text inverse */
+}
+
+/* Education theme exception: light amber background */
+[data-theme="education"] .btn-primary {
+  color: #111111; /* dark text for WCAG AA */
+}</code></pre>
+        </div>
+      </div>
+
+      <div class="section-grid">
+        <div class="panel">
+          <h3>Card + Badge (Intent preview)</h3>
+          <div class="intent-preview">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Summarize contract</div>
+                <span class="badge badge-neutral">Intent preview</span>
+              </div>
+              <div class="card-body">
+                I’ll extract key obligations, dates, and risks from the uploaded contract and present a concise summary.
+              </div>
+              <div class="intent-footer">
+                <div class="badge-row">
+                  <span class="badge badge-success">High confidence</span>
+                  <span class="badge badge-warning">Medium</span>
+                  <span class="badge badge-danger">Low</span>
                 </div>
-                <div class="card-body">
-                  This card uses <code>--color-surface-raised</code> for its background and inherits
-                  <code>--color-text-primary</code> for text.
-                </div>
+                <span class="human-handoff">Talk to a human</span>
               </div>
-            </div>
-            <div>
-              <div class="section-title">Code & token mapping</div>
-              <pre><code>.card {
-  /* Card background: var(--color-surface-raised) */
-  background: var(--color-surface-raised);
-  /* Page background: var(--color-surface-default) */
-  /* Text: var(--color-text-primary) */
-}</code></pre>
-              <p class="muted" style="margin-top: 6px;">
-                <span class="token-pill">
-                  <span class="token-swatch" style="color: var(--color-surface-raised);"></span>
-                  <span>--color-surface-raised</span>
-                </span>
-                <span class="token-pill">
-                  <span class="token-swatch" style="color: var(--color-surface-default);"></span>
-                  <span>--color-surface-default</span>
-                </span>
-              </p>
             </div>
           </div>
         </div>
 
-        <!-- Input -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Input</div>
-            <div class="card-meta">Text field with focus-visible state</div>
-          </div>
-          <div class="card-body card-grid">
-            <div>
-              <div class="section-title">Visual preview</div>
-              <div class="field">
-                <label for="exampleInput">Label</label>
-                <input id="exampleInput" type="text" placeholder="Ask PRISM something…" />
-              </div>
-              <p class="muted">
-                Inputs use <code>--color-surface-default</code> for background and
-                <code>--color-action-primary</code> for focus rings.
-              </p>
-            </div>
-            <div>
-              <div class="section-title">Code & token mapping</div>
-              <pre><code>.field input {
-  background: var(--color-surface-default);
-  color: var(--color-text-primary);
-  border-color: var(--color-input-border);
+        <div class="panel">
+          <h3>Card &amp; badge code</h3>
+          <pre><code>.card {
+  background: var(--color-surface-raised); /* semantic: surface raised */
+  color: var(--color-text-primary);        /* semantic: text primary */
 }
 
-.field input:focus-visible {
-  outline: 2px solid var(--color-action-primary);
-  border-color: var(--color-action-primary);
-}</code></pre>
-              <p class="muted" style="margin-top: 6px;">
-                <span class="token-pill">
-                  <span class="token-swatch" style="color: var(--color-surface-default);"></span>
-                  <span>--color-surface-default</span>
-                </span>
-                <span class="token-pill">
-                  <span class="token-swatch" style="color: var(--color-action-primary);"></span>
-                  <span>--color-action-primary</span>
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Badge -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Badge</div>
-            <div class="card-meta">Status and confidence indicators</div>
-          </div>
-          <div class="card-body card-grid">
-            <div>
-              <div class="section-title">Visual preview</div>
-              <div class="badge-row">
-                <span class="badge badge-success">High confidence</span>
-                <span class="badge badge-warning">Medium confidence</span>
-                <span class="badge badge-danger">Low confidence</span>
-              </div>
-              <p class="muted" style="margin-top: 8px;">
-                Confidence badges map directly to feedback tokens for agentic UI patterns.
-              </p>
-            </div>
-            <div>
-              <div class="section-title">Code & token mapping</div>
-              <pre><code>.badge-success {
-  /* high → color-feedback-success */
-  background: var(--color-feedback-success);
+.badge-success {
+  background: var(--color-feedback-success); /* high confidence */
   color: var(--color-text-inverse);
 }
 
 .badge-warning {
-  /* medium → color-feedback-warning */
-  background: var(--color-feedback-warning);
+  background: var(--color-feedback-warning); /* medium confidence */
   color: var(--color-text-primary);
 }
 
 .badge-danger {
-  /* low → color-feedback-danger */
-  background: var(--color-feedback-danger);
+  background: var(--color-feedback-danger);  /* low confidence */
   color: var(--color-text-inverse);
 }</code></pre>
-              <p class="muted" style="margin-top: 6px;">
-                <span class="token-pill">
-                  <span class="token-swatch" style="color: var(--color-feedback-success);"></span>
-                  <span>--color-feedback-success</span>
-                </span>
-                <span class="token-pill">
-                  <span class="token-swatch" style="color: var(--color-feedback-warning);"></span>
-                  <span>--color-feedback-warning</span>
-                </span>
-                <span class="token-pill">
-                  <span class="token-swatch" style="color: var(--color-feedback-danger);"></span>
-                  <span>--color-feedback-danger</span>
-                </span>
-              </p>
+        </div>
+      </div>
+
+      <div class="section-grid">
+        <div class="panel">
+          <h3>Inputs</h3>
+          <div class="stack">
+            <div class="component-row">
+              <div class="component-label">Default</div>
+              <input class="input" placeholder="Ask PRISM anything…" />
+            </div>
+            <div class="component-row">
+              <div class="component-label">Focused</div>
+              <input class="input" value="Summarize this document…" />
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- THEMES TAB -->
-      <section class="tab-panel" id="panel-themes" role="tabpanel" aria-labelledby="tab-themes" aria-hidden="true">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Theme overview</div>
-            <div class="card-meta">Base, Entertainment, and Education</div>
+        <div class="panel">
+          <h3>Input code</h3>
+          <pre><code>.input {
+  background: var(--color-surface-default); /* semantic: surface default */
+  color: var(--color-text-primary);         /* semantic: text primary */
+  border: 1px solid rgba(0,0,0,0.18);
+}
+
+.input:focus-visible {
+  border-color: var(--color-action-primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb,
+    var(--color-action-primary) 30%, transparent);
+}</code></pre>
+        </div>
+      </div>
+
+      <div class="section-grid single">
+        <div class="panel">
+          <h3>Badge variants</h3>
+          <div class="component-row">
+            <div class="component-label">Neutral</div>
+            <span class="badge badge-neutral">Draft</span>
           </div>
-          <div class="card-body">
-            <div class="section-title">Always-on theme swatches</div>
-            <p class="muted">
-              These buttons use hardcoded hex values so they always represent the correct palette,
-              regardless of the active theme.
+          <div class="component-row">
+            <div class="component-label">Success</div>
+            <span class="badge badge-success">High confidence</span>
+          </div>
+          <div class="component-row">
+            <div class="component-label">Warning</div>
+            <span class="badge badge-warning">Medium confidence</span>
+          </div>
+          <div class="component-row">
+            <div class="component-label">Danger</div>
+            <span class="badge badge-danger">Low confidence</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THEMES TAB -->
+    <section class="tab-panel" id="tab-themes" role="tabpanel" aria-labelledby="tab-themes-btn">
+      <div class="section-grid">
+        <div class="panel">
+          <h3>Theme switch behavior</h3>
+          <p class="small">
+            The dropdown updates <code>&lt;html data-theme="…"&gt;</code> and redefines all CSS variables with the exact hex values.
+          </p>
+          <pre><code>function applyTheme(theme) {
+  const root = document.documentElement;
+  root.dataset.theme = theme;
+
+  if (theme === 'base') {
+    root.style.setProperty('--color-action-primary', '#0066CC');
+    root.style.setProperty('--color-surface-default', '#FFFFFF');
+    root.style.setProperty('--color-text-primary', '#111111');
+    root.style.setProperty('--color-surface-raised', '#F5F5F5');
+    root.style.setProperty('--color-text-inverse', '#FFFFFF');
+  }
+  // entertainment / education branches omitted for brevity
+}</code></pre>
+        </div>
+
+        <div class="panel">
+          <h3>Theme swatches (hardcoded)</h3>
+          <p class="small muted">
+            These buttons intentionally use hardcoded hex backgrounds and do not rely on CSS variables.
+          </p>
+          <div class="themes-row">
+            <button class="btn" style="background:#0066CC;color:#FFFFFF;border-color:transparent;">
+              Base (#0066CC)
+            </button>
+            <button class="btn" style="background:#E50914;color:#FFFFFF;border-color:transparent;">
+              Entertainment (#E50914)
+            </button>
+            <button class="btn" style="background:#F4A300;color:#111111;border-color:transparent;">
+              Education (#F4A300)
+            </button>
+          </div>
+
+          <h4 style="margin-top:14px;">Primary button text rules</h4>
+          <ul class="small">
+            <li>Base &amp; Entertainment → text uses <code>var(--color-text-inverse)</code> (white).</li>
+            <li>Education → text explicitly overridden to <code>#111111</code> for contrast.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI RULES TAB -->
+    <section class="tab-panel" id="tab-ai-rules" role="tabpanel" aria-labelledby="tab-ai-rules-btn">
+      <div class="section-grid">
+        <div class="panel">
+          <h3>AI + design rules</h3>
+          <ul class="ai-rules-list">
+            <li>Use semantic tokens (e.g., <code>--color-action-primary</code>) instead of raw primitives.</li>
+            <li>All animated components must respect <code>@media (prefers-reduced-motion: reduce)</code>.</li>
+            <li>Apply themes via <code>data-theme</code> on the <code>&lt;html&gt;</code> element.</li>
+            <li>Never fork components per theme—only override semantic tokens.</li>
+            <li>Maintain at least 4.5:1 contrast for text on any background.</li>
+            <li>Focus states must always be visible; never rely on <code>outline: none</code> alone.</li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h3>Agentic UI patterns</h3>
+          <div class="stack">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Escalation example</span>
+                <span class="badge badge-neutral">Agentic pattern</span>
+              </div>
+              <div class="card-body">
+                When confidence is low, show a visible human handoff option alongside the AI intent preview.
+              </div>
+              <div class="intent-footer">
+                <div class="badge-row">
+                  <span class="badge badge-danger">Low confidence</span>
+                </div>
+                <span class="human-handoff">Contact human expert</span>
+              </div>
+            </div>
+            <p class="small muted">
+              Confidence badges map to feedback tokens:
+              <span class="pill"><span class="pill-dot"></span> high → <code>--color-feedback-success</code></span>
+              <span class="pill"><span class="pill-dot"></span> medium → <code>--color-feedback-warning</code></span>
+              <span class="pill"><span class="pill-dot"></span> low → <code>--color-feedback-danger</code></span>
             </p>
-            <div class="theme-demo-row" aria-label="Theme color swatches">
-              <button class="theme-demo-btn theme-demo-btn-base">
-                Base theme (#0066CC)
-              </button>
-              <button class="theme-demo-btn theme-demo-btn-entertainment">
-                Entertainment theme (#E50914)
-              </button>
-              <button class="theme-demo-btn theme-demo-btn-education">
-                Education theme (#F4A300)
-              </button>
-            </div>
-            <div class="layout-two" style="margin-top: 12px;">
-              <div>
-                <div class="section-title">Base theme</div>
-                <ul class="muted">
-                  <li><code>--color-action-primary: #0066CC</code></li>
-                  <li><code>--color-surface-default: #FFFFFF</code></li>
-                  <li><code>--color-text-primary: #111111</code></li>
-                  <li><code>--color-surface-raised: #F5F5F5</code></li>
-                </ul>
-              </div>
-              <div>
-                <div class="section-title">Entertainment theme</div>
-                <ul class="muted">
-                  <li><code>--color-action-primary: #E50914</code></li>
-                  <li><code>--color-surface-default: #0A0A0A</code></li>
-                  <li><code>--color-text-primary: #FFFFFF</code></li>
-                  <li><code>--color-surface-raised: #1A1A1A</code></li>
-                </ul>
-              </div>
-            </div>
-            <div class="layout-two" style="margin-top: 8px;">
-              <div>
-                <div class="section-title">Education theme</div>
-                <ul class="muted">
-                  <li><code>--color-action-primary: #F4A300</code></li>
-                  <li><code>--color-surface-default: #FFFBF2</code></li>
-                  <li><code>--color-text-primary: #111111</code></li>
-                  <li><code>--color-surface-raised: #F5F5F5</code></li>
-                </ul>
-              </div>
-              <div>
-                <div class="section-title">Theme switching behavior</div>
-                <pre><code>// 1. Update data-theme on &lt;html&gt;
-document.documentElement.setAttribute('data-theme', theme);
-
-// 2. Redefine CSS variables with theme hex values
-document.documentElement.style.setProperty('--color-action-primary', hex);
-document.documentElement.style.setProperty('--color-surface-default', hex);
-document.documentElement.style.setProperty('--color-text-primary', hex);
-document.documentElement.style.setProperty('--color-surface-raised', hex);
-
-// 3. Update derived tokens like --color-button-text
-// so components update instantly.</code></pre>
-              </div>
-            </div>
           </div>
         </div>
-      </section>
-
-      <!-- AI RULES TAB -->
-      <section class="tab-panel" id="panel-rules" role="tabpanel" aria-labelledby="tab-rules" aria-hidden="true">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">PRISM AI agent rules</div>
-            <div class="card-meta">Design-time constraints baked into the system</div>
-          </div>
-          <div class="card-body rules-list">
-            <h3>Token rules</h3>
-            <ul>
-              <li>Never hardcode hex values in components; always use semantic tokens like <code>var(--color-action-primary)</code>.</li>
-              <li>Always reference semantic tokens, not primitive color values, in component styles.</li>
-              <li>Read each token description before applying it to confirm intent.</li>
-            </ul>
-
-            <h3>Theme rules</h3>
-            <ul>
-              <li>Apply themes via the <code>data-theme</code> attribute on the root <code>&lt;html&gt;</code> element.</li>
-              <li>Never duplicate or fork components for different themes; only override semantic tokens.</li>
-              <li>Use the exact theme values:
-                <span class="badge-inline">Base</span>
-                <span class="badge-inline">Entertainment</span>
-                <span class="badge-inline">Education</span>
-              </li>
-            </ul>
-
-            <h3>Agentic UI patterns</h3>
-            <ul>
-              <li>Intent preview uses card + badge components together.</li>
-              <li>Confidence badge colors:
-                <ul>
-                  <li>High → <code>--color-feedback-success</code></li>
-                  <li>Medium → <code>--color-feedback-warning</code></li>
-                  <li>Low → <code>--color-feedback-danger</code></li>
-                </ul>
-              </li>
-              <li>Escalation flows must show a visible human handoff option.</li>
-            </ul>
-
-            <h3>Accessibility & motion</h3>
-            <ul>
-              <li>Text on any background targets a minimum 4.5:1 contrast ratio (WCAG AA).</li>
-              <li>Focus states are always visible and never rely on <code>outline: none</code>.</li>
-              <li>All animated components include a <code>prefers-reduced-motion</code> override.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-    </main>
+      </div>
+    </section>
   </div>
 
   <script>
-    (function () {
-      const htmlEl = document.documentElement;
-      const themeSelect = document.getElementById('themeSelect');
-      const tabButtons = Array.from(document.querySelectorAll('.tab-button'));
-      const tabPanels = Array.from(document.querySelectorAll('.tab-panel'));
+    const themeSelect = document.getElementById('themeSelect');
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabPanels = document.querySelectorAll('.tab-panel');
 
-      const THEMES = {
-        base: {
-          actionPrimary: '#0066CC',
-          surfaceDefault: '#FFFFFF',
-          textPrimary: '#111111',
-          surfaceRaised: '#F5F5F5',
-          isDark: false
-        },
-        entertainment: {
-          actionPrimary: '#E50914',
-          surfaceDefault: '#0A0A0A',
-          textPrimary: '#FFFFFF',
-          surfaceRaised: '#1A1A1A',
-          isDark: true
-        },
-        education: {
-          actionPrimary: '#F4A300',
-          surfaceDefault: '#FFFBF2',
-          textPrimary: '#111111',
-          surfaceRaised: '#F5F5F5',
-          isDark: false
-        }
+    function applyTheme(theme) {
+      const root = document.documentElement;
+      root.dataset.theme = theme;
+
+      if (theme === 'base') {
+        root.style.setProperty('--color-action-primary', '#0066CC');
+        root.style.setProperty('--color-surface-default', '#FFFFFF');
+        root.style.setProperty('--color-text-primary', '#111111');
+        root.style.setProperty('--color-surface-raised', '#F5F5F5');
+        root.style.setProperty('--color-text-inverse', '#FFFFFF');
+      } else if (theme === 'entertainment') {
+        root.style.setProperty('--color-action-primary', '#E50914');
+        root.style.setProperty('--color-surface-default', '#0A0A0A');
+        root.style.setProperty('--color-text-primary', '#FFFFFF');
+        root.style.setProperty('--color-surface-raised', '#1A1A1A');
+        root.style.setProperty('--color-text-inverse', '#FFFFFF');
+      } else if (theme === 'education') {
+        root.style.setProperty('--color-action-primary', '#F4A300');
+        root.style.setProperty('--color-surface-default', '#FFFBF2');
+        root.style.setProperty('--color-text-primary', '#111111');
+        root.style.setProperty('--color-surface-raised', '#F5F5F5');
+        root.style.setProperty('--color-text-inverse', '#FFFFFF');
+      }
+
+      updateTokenSwatches();
+    }
+
+    function updateTokenSwatches() {
+      const styles = getComputedStyle(document.documentElement);
+      const map = {
+        'swatch-action-primary': '--color-action-primary',
+        'swatch-surface-default': '--color-surface-default',
+        'swatch-surface-raised': '--color-surface-raised',
+        'swatch-text-primary': '--color-text-primary',
+        'swatch-text-inverse': '--color-text-inverse'
       };
 
-      function applyTheme(themeKey) {
-        const theme = THEMES[themeKey] || THEMES.base;
-
-        // 1. Update data-theme on <html>
-        htmlEl.setAttribute('data-theme', themeKey);
-
-        // 2. Redefine CSS variables with theme hex values
-        htmlEl.style.setProperty('--color-action-primary', theme.actionPrimary);
-        htmlEl.style.setProperty('--color-surface-default', theme.surfaceDefault);
-        htmlEl.style.setProperty('--color-text-primary', theme.textPrimary);
-        htmlEl.style.setProperty('--color-surface-raised', theme.surfaceRaised);
-
-        // Derived tokens
-        htmlEl.style.setProperty('--color-page-background', theme.surfaceDefault);
-        htmlEl.style.setProperty('--color-card-background', theme.surfaceRaised);
-        htmlEl.style.setProperty('--color-input-background', theme.surfaceDefault);
-
-        // Button text: var(--color-text-primary) on light themes, white on dark
-        if (theme.isDark) {
-          htmlEl.style.setProperty('--color-button-text', 'var(--color-text-inverse)');
-        } else {
-          htmlEl.style.setProperty('--color-button-text', 'var(--color-text-primary)');
+      Object.entries(map).forEach(([id, token]) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.backgroundColor = styles.getPropertyValue(token).trim();
         }
-      }
-
-      function onThemeChange(event) {
-        const value = event.target.value;
-        applyTheme(value);
-      }
-
-      themeSelect.addEventListener('change', onThemeChange);
-
-      // Initialize theme from select
-      applyTheme(themeSelect.value);
-
-      // Tab behavior
-      function setActiveTab(tabId) {
-        tabButtons.forEach((btn) => {
-          const isActive = btn.id === tabId;
-          btn.setAttribute('aria-selected', String(isActive));
-          btn.tabIndex = isActive ? 0 : -1;
-        });
-
-        tabPanels.forEach((panel) => {
-          const controlsId = 'panel-' + tabId.split('-')[1];
-          const isActive = panel.id === controlsId;
-          panel.setAttribute('aria-hidden', String(!isActive));
-        });
-      }
-
-      tabButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          setActiveTab(btn.id);
-        });
-
-        btn.addEventListener('keydown', (event) => {
-          if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-            event.preventDefault();
-            const currentIndex = tabButtons.indexOf(btn);
-            const direction = event.key === 'ArrowRight' ? 1 : -1;
-            const nextIndex = (currentIndex + direction + tabButtons.length) % tabButtons.length;
-            const nextBtn = tabButtons[nextIndex];
-            nextBtn.focus();
-            setActiveTab(nextBtn.id);
-          }
-        });
       });
-    })();
+    }
+
+    themeSelect.addEventListener('change', (e) => {
+      applyTheme(e.target.value);
+    });
+
+    tabButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.setAttribute('aria-selected', 'false'));
+        btn.setAttribute('aria-selected', 'true');
+
+        tabPanels.forEach(panel => panel.classList.remove('active'));
+        const panel = document.getElementById(btn.getAttribute('aria-controls'));
+        if (panel) panel.classList.add('active');
+      });
+    });
+
+    // Initial setup
+    applyTheme('base');
   </script>
 </body>
 </html>
