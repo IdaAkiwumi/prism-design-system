@@ -64,6 +64,7 @@ Load into Cursor, Copilot, or any MCP-compatible AI agent.
 | --color-surface-default | #FFFFFF |
 | --color-text-primary | #111111 |
 | --color-surface-raised | #F5F5F5 |
+| --border-radius-default | 6px |  
 
 ## Theme: ENTERTAINMENT
 | Token | Value |
@@ -72,6 +73,7 @@ Load into Cursor, Copilot, or any MCP-compatible AI agent.
 | --color-surface-default | #0A0A0A |
 | --color-text-primary | #FFFFFF |
 | --color-surface-raised | #1A1A1A |
+| --border-radius-default | 0px |  
 
 ## Theme: EDUCATION
 | Token | Value |
@@ -80,6 +82,7 @@ Load into Cursor, Copilot, or any MCP-compatible AI agent.
 | --color-surface-default | #FFFBF2 |
 | --color-text-primary | #111111 |
 | --color-surface-raised | #F5F5F5 |
+| --border-radius-default | 10px |  
 
 ## AI Instructions
 When generating any design system output:
