@@ -83,6 +83,5 @@ This design system is not a static Figma file – it's infrastructure that feeds
 ---
 
 ## Built By
-
 **Ida Akiwumi**  
 Creative Technologist · AI Frontend Engineer · Design Engineer
