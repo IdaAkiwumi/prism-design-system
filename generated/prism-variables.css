@@ -1,0 +1,26 @@
+/* PRISM Design System - Generated from ai-rules.md */
+
+/* BASE THEME (default) */
+:root {
+  --color-action-primary: #0066CC;
+  --color-surface-default: #FFFFFF;
+  --color-text-primary: #111111;
+  --color-surface-raised: #F5F5F5;
+}
+
+/* ENTERTAINMENT THEME */
+[data-theme="entertainment"] {
+  --color-action-primary: #E50914;
+  --color-surface-default: #0A0A0A;
+  --color-text-primary: #FFFFFF;
+  --color-surface-raised: #1A1A1A;
+}
+
+/* EDUCATION THEME */
+[data-theme="education"] {
+  --color-action-primary: #F4A300;
+  --color-surface-default: #FFFBF2;
+  --color-text-primary: #111111;
+  --color-surface-raised: #F5F5F5;
+}
+

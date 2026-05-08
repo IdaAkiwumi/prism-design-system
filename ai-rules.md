@@ -60,24 +60,26 @@ Load into Cursor, Copilot, or any MCP-compatible AI agent.
 ## Theme: BASE (default)
 | Token | Value |
 |-------|-------|
-| color-action-primary | #0066CC |
-| color-surface-default | #FFFFFF |
-| color-text-primary | #111111 |
+| --color-action-primary | #0066CC |
+| --color-surface-default | #FFFFFF |
+| --color-text-primary | #111111 |
+| --color-surface-raised | #F5F5F5 |
 
 ## Theme: ENTERTAINMENT
 | Token | Value |
 |-------|-------|
-| color-action-primary | #E50914 |
-| color-surface-default | #0A0A0A |
-| color-text-primary | #FFFFFF |
-| color-surface-raised | #1A1A1A |
+| --color-action-primary | #E50914 |
+| --color-surface-default | #0A0A0A |
+| --color-text-primary | #FFFFFF |
+| --color-surface-raised | #1A1A1A |
 
 ## Theme: EDUCATION
 | Token | Value |
 |-------|-------|
-| color-action-primary | #F4A300 |
-| color-surface-default | #FFFBF2 |
-| color-text-primary | #111111 |
+| --color-action-primary | #F4A300 |
+| --color-surface-default | #FFFBF2 |
+| --color-text-primary | #111111 |
+| --color-surface-raised | #F5F5F5 |
 
 ## AI Instructions
 When generating any design system output:
@@ -85,3 +87,34 @@ When generating any design system output:
 2. Never invent or approximate colors
 3. Reference semantic token names in code comments
 4. Generate CSS variables as: --token-name: value;
+
+
+## Component Style Rules (CRITICAL for AI)
+
+### Button Component
+- PRIMARY button background: ALWAYS `var(--color-action-primary)`
+- PRIMARY button text: ALWAYS `var(--color-text-inverse)` (white)
+- NEVER use `var(--color-text-primary)` on a primary button
+- If background is dark/colored, text MUST be white (#FFFFFF) for WCAG AA compliance
+
+### Contrast Enforcement
+- Any component with `background: var(--color-action-primary)` MUST have `color: var(--color-text-inverse)`
+- For base theme: background #0066CC (dark blue) → text white
+- For entertainment: background #E50914 (red) → text white
+- For education: background #F4A300 (amber) → text dark (#111111) ONLY if background is light enough (WCAG contrast >=4.5:1)
+
+### Theme-Specific Overrides
+- Education theme primary button background #F4A300 (amber) is light, so text should be #111111
+- All other themes: primary button text = white
+
+### Implementation Example (DO THIS)
+```css
+.btn-primary {
+  background: var(--color-action-primary);
+  color: var(--color-text-inverse); /* always white except education */
+}
+
+/* Education theme exception */
+[data-theme="education"] .btn-primary {
+  color: #111111; /* dark text on amber */
+}
