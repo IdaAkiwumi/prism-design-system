@@ -3,6 +3,9 @@
 > One token architecture. Every brand context.  
 > Built for humans, AI agents, and multi‑industry product teams.
 
+[![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-EA4AAA?style=for-the-badge&logo=github-sponsors)](https://github.com/sponsors/IdaAkiwumi)
+[![PayPal](https://img.shields.io/badge/Donate-PayPal-00457C?style=for-the-badge&logo=paypal)](https://www.paypal.com/paypalme/iakiwumi)
+
 PRISM is a **machine‑readable design infrastructure** that proves a single token system can power radically different brand experiences — from enterprise SaaS to cinematic entertainment to warm education — without changing a single line of component code.
 
 ---
@@ -47,7 +50,7 @@ All components (buttons, cards, badges, inputs) automatically adapt when the the
 
 ## How the pipeline works
 
-```bash
+[BACKTICK][BACKTICK][BACKTICK]bash
 # 1. Edit the single source of truth
 vi ai-rules.md
 
@@ -57,7 +60,7 @@ npm run sync
 # 3. Outputs generated automatically:
 #    - tokens/primitives.json, semantic.json, themes/*.json
 #    - generated/ai-rules.json, prism-variables.css, spec-summary.json
-```
+[BACKTICK][BACKTICK][BACKTICK]
 
 This design system is not a static Figma file – it's infrastructure that feeds both humans and AI tools.
 
@@ -72,16 +75,31 @@ This design system is not a static Figma file – it's infrastructure that feeds
 
 ## Why this matters
 
-> 
-    ✅ One source of truth (ai-rules.md)
-    ✅ Tokens carry intent descriptions for AI agents
-    ✅ Theme switching without forking components
-    ✅ Agentic UI patterns documented
-    ✅ Parser bridges design → code → CSS
-    ✅ Playground proves it works in a browser
+✅ One source of truth (`ai-rules.md`)  
+✅ Tokens carry intent descriptions for AI agents  
+✅ Theme switching without forking components  
+✅ Agentic UI patterns documented  
+✅ Parser bridges design → code → CSS  
+✅ Playground proves it works in a browser
 
 ---
 
 ## Built By
+
 **Ida Akiwumi**  
 Creative Technologist · AI Frontend Engineer · Design Engineer
+
+[![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-EA4AAA?style=for-the-badge&logo=github-sponsors)](https://github.com/sponsors/IdaAkiwumi)
+[![PayPal](https://img.shields.io/badge/Donate-PayPal-00457C?style=for-the-badge&logo=paypal)](https://www.paypal.com/paypalme/iakiwumi)
+
+---
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=IdaAkiwumi%2Fprism-design-system&type=timeline&logscale=&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=IdaAkiwumi/prism-design-system&type=timeline&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=IdaAkiwumi/prism-design-system&type=timeline&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=IdaAkiwumi/prism-design-system&type=timeline&legend=top-left" />
+ </picture>
+</a>
