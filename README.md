@@ -50,7 +50,7 @@ All components (buttons, cards, badges, inputs) automatically adapt when the the
 
 ## How the pipeline works
 
-[BACKTICK][BACKTICK][BACKTICK]bash
+```bash
 # 1. Edit the single source of truth
 vi ai-rules.md
 
@@ -60,7 +60,7 @@ npm run sync
 # 3. Outputs generated automatically:
 #    - tokens/primitives.json, semantic.json, themes/*.json
 #    - generated/ai-rules.json, prism-variables.css, spec-summary.json
-[BACKTICK][BACKTICK][BACKTICK]
+```
 
 This design system is not a static Figma file – it's infrastructure that feeds both humans and AI tools.
 
