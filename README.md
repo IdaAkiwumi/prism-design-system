@@ -84,14 +84,12 @@ This design system is not a static Figma file – it's infrastructure that feeds
 
 ---
 
-## Built By
+### ☕ Support This Project
+* [Sponsor on GitHub](https://github.com/sponsors/IdaAkiwumi)
+* [Donate via PayPal](https://www.paypal.com/paypalme/iakiwumi)
 
-**Ida Akiwumi**  
-Creative Technologist · AI Frontend Engineer · Design Engineer
-
-[![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-EA4AAA?style=for-the-badge&logo=github-sponsors)](https://github.com/sponsors/IdaAkiwumi)
-[![PayPal](https://img.shields.io/badge/Donate-PayPal-00457C?style=for-the-badge&logo=paypal)](https://www.paypal.com/paypalme/iakiwumi)
-
+Developed by Ida Akiwumi
+* Creative Technologist | Frontend Engineer | AI Integration Specialist
 ---
 
 ## Star History
